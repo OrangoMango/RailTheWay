@@ -1,27 +1,33 @@
 package com.orangomango.railway.game;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import javafx.geometry.Point2D;
 
 import com.orangomango.railway.Util;
 
 public class Carriage{
-	private static final double WIDTH = 50;
-	private static final double HEIGHT = 30;
+	public static double WIDTH, HEIGHT;
 	private static final double SPEED = 3;
 
 	private double x, y;
 	private World world;
 	private byte direction;
+	private boolean moving = true;
+	private TrainType trainType;
+	private Carriage parent;
 
-	public Carriage(World world, double x, double y, byte direction){
+	public Carriage(World world, TrainType trainType, double x, double y, byte direction, Carriage parent){
 		this.x = x;
 		this.y = y;
+		this.trainType = trainType;
 		this.world = world;
 		this.direction = direction;
+		this.parent = parent;
 	}
 
 	public void update(){
+		if (!this.moving) return;
+
 		int worldX = (int)(this.x/Tile.WIDTH);
 		int worldY = (int)(this.y/Tile.HEIGHT);
 		Tile tile = this.world.getTileAt(worldX, worldY);
@@ -41,11 +47,37 @@ public class Carriage{
 				this.direction = finalDir;
 			} else if (connAmount == 2){
 				byte trackDir = track.getDirection(); // 1010 1000 -> 1000
-				if (trackDir == Util.invertDirection(this.direction)){
+				if (track.getBaseDirection() == Util.invertDirection(this.direction)){
+					this.direction = trackDir;
+				} else if (track.getBaseDirection() == this.direction || Util.invertDirection(this.direction) == trackDir){
 					this.direction = track.getBaseDirection();
 				} else {
-					this.direction = trackDir;
+					track.changeDirection();
+					this.direction = track.getBaseDirection();
 				}
+			}
+
+			// Station
+			if (this.parent == null){
+				Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Station && ((Station)t).getType() == this.trainType).findAny().ifPresent(t -> {
+					System.out.println(t);
+					this.moving = false;
+					Util.schedule(() -> this.moving = true, 2500);
+				});
+			} else {
+				Point2D thisPoint = new Point2D(this.x, this.y);
+				Point2D otherPoint = new Point2D(this.parent.x, this.parent.y);
+				if (thisPoint.distance(otherPoint) > Math.sqrt(Tile.WIDTH*Tile.WIDTH+Tile.HEIGHT*Tile.HEIGHT)){
+					this.moving = false;
+				}
+			}
+
+			// Stoplight
+			if (this.parent == null){
+				Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Stoplight && !((Stoplight)t).canGo()).findAny().ifPresent(t -> {
+					System.out.println(t);
+					this.moving = false;
+				});
 			}
 		}
 
@@ -60,8 +92,28 @@ public class Carriage{
 		}
 	}
 
-	public void render(GraphicsContext gc, Color color){
-		gc.setFill(color);
+	public void setMoving(boolean value){
+		this.moving = value;
+	}
+
+	public boolean isMoving(){
+		return this.moving;
+	}
+
+	public boolean isInside(){
+		return this.x >= 0 && this.y >= 0 && this.x <= this.world.getWidth()*Tile.WIDTH && this.y <= this.world.getHeight()*Tile.HEIGHT;
+	}
+
+	public double getX(){
+		return this.x;
+	}
+
+	public double getY(){
+		return this.y;
+	}
+
+	public void render(GraphicsContext gc){
+		gc.setFill(this.trainType.getColor());
 		if ((this.direction & 5) != 0){
 			gc.fillRect(this.x-WIDTH/2, this.y-HEIGHT/2, WIDTH, HEIGHT);
 		} else if ((this.direction & 10) != 0){

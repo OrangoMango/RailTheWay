@@ -6,8 +6,8 @@ import javafx.stage.Stage;
 import com.orangomango.railway.ui.GameScreen;
 
 public class MainApplication extends Application{
-	private static final int WIDTH = 1000;
-	private static final int HEIGHT = 800;
+	private static final int WIDTH = 900;
+	private static final int HEIGHT = 750;
 	private static final int FPS = 40;
 	
 	@Override
@@ -17,6 +17,7 @@ public class MainApplication extends Application{
 		GameScreen gs = new GameScreen(WIDTH, HEIGHT, FPS);
 
 		stage.setScene(gs.getScene());
+		stage.setResizable(false);
 		stage.show();
 	}
 	

@@ -1,24 +1,31 @@
 package com.orangomango.railway.game;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 import java.io.*;
+import java.util.Random;
 
 public class World{
 	private int width, height;
 	private Tile[][] world;
 
 	public World(InputStream inputStream){
+		Random random = new Random();
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-			String header = reader.readLine();
-			this.width = Integer.parseInt(header.split("x")[0]);
-			this.height = Integer.parseInt(header.split("x")[1]);
+			String[] header = reader.readLine().split(" ");
+			this.width = Integer.parseInt(header[0].split("x")[0]);
+			this.height = Integer.parseInt(header[0].split("x")[1]);
+			Tile.WIDTH = Integer.parseInt(header[1].split("x")[0]);
+			Tile.HEIGHT = Integer.parseInt(header[1].split("x")[1]);
+			Carriage.WIDTH = Tile.WIDTH;
+			Carriage.HEIGHT = Tile.HEIGHT*0.6;
 			this.world = new Tile[this.width][this.height];
 			for (int y = 0; y < this.height; y++){
 				String line = reader.readLine();
 				for (int x = 0; x < this.width; x++){
-					String[] data = line.split(" ")[x].split(";");
+					String[] data = line.split("\t")[x].split(";");
 					int type = Integer.parseInt(data[0]);
 					Tile tile = null;
 					if (type == 0){
@@ -28,6 +35,10 @@ public class World{
 						if (data.length == 2){
 							((Track)tile).setBaseDirection(Byte.parseByte(data[1]));
 						}
+					} else if (type == 2){
+						tile = new Station(x, y, TrainType.values()[Integer.parseInt(data[1])]);
+					} else if (type == 3){
+						tile = new Stoplight(this, x, y, Byte.parseByte(data[1]));
 					}
 					this.world[x][y] = tile;
 				}
@@ -38,6 +49,14 @@ public class World{
 		}
 
 		updateConnections();
+	}
+
+	public int getWidth(){
+		return this.width;
+	}
+
+	public int getHeight(){
+		return this.height;
 	}
 
 	private void updateConnections(){

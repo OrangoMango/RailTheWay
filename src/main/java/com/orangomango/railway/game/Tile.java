@@ -5,11 +5,19 @@ import javafx.scene.paint.Color;
 
 public class Tile{
 	protected int x, y;
-	public static final double WIDTH = 50, HEIGHT = 50;
+	public static double WIDTH, HEIGHT;
 
 	public Tile(int x, int y){
 		this.x = x;
 		this.y = y;
+	}
+
+	public int getX(){
+		return this.x;
+	}
+
+	public int getY(){
+		return this.y;
 	}
 
 	public void render(GraphicsContext gc){
