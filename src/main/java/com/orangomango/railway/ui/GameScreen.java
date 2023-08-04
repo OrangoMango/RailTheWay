@@ -3,10 +3,13 @@ package com.orangomango.railway.ui;
 import javafx.scene.Scene;
 import javafx.scene.canvas.*;
 import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.animation.*;
 import javafx.util.Duration;
 import javafx.scene.input.MouseButton;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 import java.util.*;
 
@@ -18,11 +21,20 @@ public class GameScreen{
 	private double translateX, translateY;
 	private World world;
 	private List<Train> trains = new ArrayList<>();
+	private Timeline loop;
+	private volatile Tile warningTile;
+	private volatile boolean warningBlink;
+	private volatile boolean gameRunning = true;
+
+	public static int score;
+	private static final Font FONT = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
+	private static final Image WARNING_IMAGE = new Image(GameScreen.class.getResourceAsStream("/images/warning.png"));
 
 	public GameScreen(int w, int h, int fps){
 		this.width = w;
 		this.height = h;
 		this.fps = fps;
+		score = 0;
 	}
 
 	public Scene getScene(){
@@ -32,14 +44,15 @@ public class GameScreen{
 		pane.getChildren().add(canvas);
 
 		this.world = new World(getClass().getResourceAsStream("/world1.wld"));
-		this.translateX = (this.width-this.world.getWidth()*Tile.WIDTH)/2;
+		this.translateX = (this.width-250-this.world.getWidth()*Tile.WIDTH)/2;
 		this.translateY = (this.height-this.world.getHeight()*Tile.HEIGHT)/2;
 
 		Thread creator = new Thread(() -> {
-			while (true){
+			while (this.gameRunning){
 				try {
+					this.warningTile = Util.getRandomStart(this.world);
 					Thread.sleep(5000);
-					createRandomTrain();
+					createRandomTrain(this.warningTile);
 				} catch (InterruptedException ex){
 					ex.printStackTrace();
 				}
@@ -47,6 +60,19 @@ public class GameScreen{
 		});
 		creator.setDaemon(true);
 		creator.start();
+
+		Thread warning = new Thread(() -> {
+			while (this.gameRunning){
+				try {
+					this.warningBlink = !this.warningBlink;
+					Thread.sleep(500);
+				} catch (InterruptedException ex){
+					ex.printStackTrace();
+				}
+			}
+		});
+		warning.setDaemon(true);
+		warning.start();
 
 		canvas.setOnMousePressed(e -> {
 			final double ex = e.getX()-this.translateX;
@@ -61,17 +87,16 @@ public class GameScreen{
 			}
 		});
 
-		Timeline loop = new Timeline(new KeyFrame(Duration.millis(1000.0/this.fps), e -> update(gc)));
-		loop.setCycleCount(Animation.INDEFINITE);
-		loop.play();
+		this.loop = new Timeline(new KeyFrame(Duration.millis(1000.0/this.fps), e -> update(gc)));
+		this.loop.setCycleCount(Animation.INDEFINITE);
+		this.loop.play();
 
 		Scene scene = new Scene(pane, this.width, this.height);
 		return scene;
 	}
 
-	private void createRandomTrain(){
+	private void createRandomTrain(Tile tile){
 		Random random = new Random();
-		Tile tile = Util.getRandomStart(this.world);
 		byte dir = 0;
 		if (tile.getX() == 0) dir = (byte)4;
 		else if (tile.getY() == 0) dir = (byte)2;
@@ -108,7 +133,39 @@ public class GameScreen{
 			train.update();
 			train.render(gc);
 		}
+
+		if (this.warningBlink){
+			gc.drawImage(WARNING_IMAGE, this.warningTile.getX()*Tile.WIDTH, this.warningTile.getY()*Tile.HEIGHT, 32, 32);
+		}
+
 		gc.restore();
+
+		if (this.score < 0){
+			this.score = 0; // Score min is 0
+		}
+		gc.setFill(Color.WHITE);
+		gc.setFont(FONT);
+		gc.setTextAlign(TextAlignment.CENTER);
+		gc.fillText("Score: "+this.score, this.width-150, 150);
+
+		try {
+			List<Tile> tiles = this.trains.stream().flatMap(train -> train.getTrain().stream()).map(c -> c.getCurrentTile()).filter(c -> c != null).toList();
+			Map<Tile, Integer> occurences = new HashMap<>();
+			for (Tile t : tiles){
+				occurences.put(t, occurences.getOrDefault(t, 0)+1);
+			}
+			for (Map.Entry<Tile, Integer> entry : occurences.entrySet()){
+				if (entry.getValue() > 1){
+					// GAME OVER
+					this.loop.stop();
+					this.gameRunning = false;
+					return;
+				}
+			}
+		} catch (ConcurrentModificationException ex){
+			// Ignore if a train is added in the same time
+			System.out.println("Skipping collision check");
+		}
 
 		// Remove the trains outside the screen
 		for (int i = 0; i < this.trains.size(); i++){

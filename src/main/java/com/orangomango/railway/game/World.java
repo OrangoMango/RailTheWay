@@ -19,8 +19,6 @@ public class World{
 			this.height = Integer.parseInt(header[0].split("x")[1]);
 			Tile.WIDTH = Integer.parseInt(header[1].split("x")[0]);
 			Tile.HEIGHT = Integer.parseInt(header[1].split("x")[1]);
-			Carriage.WIDTH = Tile.WIDTH;
-			Carriage.HEIGHT = Tile.HEIGHT*0.6;
 			this.world = new Tile[this.width][this.height];
 			for (int y = 0; y < this.height; y++){
 				String line = reader.readLine();
@@ -39,6 +37,9 @@ public class World{
 						tile = new Station(x, y, TrainType.values()[Integer.parseInt(data[1])]);
 					} else if (type == 3){
 						tile = new Stoplight(this, x, y, Byte.parseByte(data[1]));
+					} else if (type == 4){
+						tile = new Track(this, x, y);
+						((Track)tile).setInput(true);
 					}
 					this.world[x][y] = tile;
 				}

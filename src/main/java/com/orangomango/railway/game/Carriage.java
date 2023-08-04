@@ -2,12 +2,14 @@ package com.orangomango.railway.game;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 
 import com.orangomango.railway.Util;
+import com.orangomango.railway.ui.GameScreen;
 
 public class Carriage{
-	public static double WIDTH, HEIGHT;
 	private static final double SPEED = 3;
+	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/carriage.png"));
 
 	private double x, y;
 	private World world;
@@ -15,6 +17,8 @@ public class Carriage{
 	private boolean moving = true;
 	private TrainType trainType;
 	private Carriage parent;
+	private Tile currentTile;
+	private boolean stationPassed;
 
 	public Carriage(World world, TrainType trainType, double x, double y, byte direction, Carriage parent){
 		this.x = x;
@@ -59,10 +63,18 @@ public class Carriage{
 
 			// Station
 			if (this.parent == null){
-				Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Station && ((Station)t).getType() == this.trainType).findAny().ifPresent(t -> {
-					System.out.println(t);
+				if (!this.stationPassed){
+					Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Station && ((Station)t).getType() == this.trainType).findAny().ifPresent(t -> {
+						this.moving = false;
+						GameScreen.score += 100;
+						this.stationPassed = true;
+						Util.schedule(() -> this.moving = true, 1500);
+					});
+				}
+
+				// Stoplight
+				Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Stoplight && !((Stoplight)t).canGo()).findAny().ifPresent(t -> {
 					this.moving = false;
-					Util.schedule(() -> this.moving = true, 2500);
 				});
 			} else {
 				Point2D thisPoint = new Point2D(this.x, this.y);
@@ -72,13 +84,14 @@ public class Carriage{
 				}
 			}
 
-			// Stoplight
-			if (this.parent == null){
-				Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Stoplight && !((Stoplight)t).canGo()).findAny().ifPresent(t -> {
-					System.out.println(t);
-					this.moving = false;
-				});
+			this.currentTile = tile;
+		}
+
+		if (!isInside()){
+			if (this.currentTile != null && this.parent == null && !this.stationPassed){
+				GameScreen.score -= 75;
 			}
+			this.currentTile = null;
 		}
 
 		if ((this.direction & 8) == 8){
@@ -90,6 +103,10 @@ public class Carriage{
 		} else if ((this.direction & 1) == 1){
 			this.x -= SPEED;
 		}
+	}
+
+	public Tile getCurrentTile(){
+		return this.currentTile;
 	}
 
 	public void setMoving(boolean value){
@@ -113,11 +130,20 @@ public class Carriage{
 	}
 
 	public void render(GraphicsContext gc){
-		gc.setFill(this.trainType.getColor());
-		if ((this.direction & 5) != 0){
-			gc.fillRect(this.x-WIDTH/2, this.y-HEIGHT/2, WIDTH, HEIGHT);
-		} else if ((this.direction & 10) != 0){
-			gc.fillRect(this.x-HEIGHT/2, this.y-WIDTH/2, HEIGHT, WIDTH);
+		if (!isInside()) return;
+		int index = this.trainType.ordinal();
+		gc.save();
+		gc.translate(this.x, this.y);
+		if ((this.direction & 8) == 8){
+			gc.rotate(270);
+		} else if ((this.direction & 4) == 4){
+			gc.rotate(0);
+		} else if ((this.direction & 2) == 2){
+			gc.rotate(90);
+		} else if ((this.direction & 1) == 1){
+			gc.rotate(180);
 		}
+		gc.drawImage(IMAGE, 1+34*index, 1, 32, 32, -Tile.WIDTH/2, -Tile.HEIGHT/2, Tile.WIDTH, Tile.HEIGHT);
+		gc.restore();
 	}
 }

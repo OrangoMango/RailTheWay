@@ -21,12 +21,12 @@ public class Train{
 		return this.exists;
 	}
 
-	public Carriage getLocomotive(){
-		return this.train.get(0);
+	public List<Carriage> getTrain(){
+		return this.train;
 	}
 
 	public void update(){
-		if (getLocomotive().isMoving() && this.exists){
+		if (this.train.get(0).isMoving() && this.exists){
 			boolean allOutside = true;;
 			for (Carriage c : this.train){
 				c.update();

@@ -13,11 +13,20 @@ public class Track extends Tile{
 	private int connectionAmount;
 	private byte direction;
 	private byte baseDirection;
+	private boolean isInput;
 	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/track.png"));
 
 	public Track(World world, int x, int y){
 		super(x, y);
 		this.world = world;
+	}
+
+	public void setInput(boolean value){
+		this.isInput = value;
+	}
+
+	public boolean isInput(){
+		return this.isInput;
 	}
 
 	public void addConnection(byte n){
