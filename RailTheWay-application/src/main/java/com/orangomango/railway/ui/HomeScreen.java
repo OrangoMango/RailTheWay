@@ -15,13 +15,15 @@ import java.util.*;
 
 import com.orangomango.railway.MainApplication;
 
+import dev.webfx.platform.resource.Resource;
+
 public class HomeScreen{
 	private int width, height, fps;
 	private List<UiButton> buttons = new ArrayList<>();
-	private Image background = new Image(getClass().getResourceAsStream("/images/background.png"));
-	private Image rails = new Image(getClass().getResourceAsStream("/images/rails.png"));
-	private Image title = new Image(getClass().getResourceAsStream("/images/title.png"));
-	private static final Font FONT = Font.loadFont(HomeScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
+	private Image background = new Image(Resource.toUrl("/images/background.png", HomeScreen.class));
+	private Image rails = new Image(Resource.toUrl("/images/rails.png", HomeScreen.class));
+	private Image title = new Image(Resource.toUrl("/images/title.png", HomeScreen.class));
+	private static final Font FONT = Font.loadFont(Resource.toUrl("/fonts/font.ttf", HomeScreen.class), 25);
 
 	public HomeScreen(int w, int h, int fps){
 		this.width = w;
@@ -39,17 +41,17 @@ public class HomeScreen{
 		loop.setCycleCount(Animation.INDEFINITE);
 		loop.play();
 
-		UiButton playButton = new UiButton(gc, 300, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> {
+		UiButton playButton = new UiButton(gc, 300, 400, 128, 128, new Image(Resource.toUrl("/images/button_play.png", HomeScreen.class)), () -> {
 			GameScreen gs = new GameScreen("world1.wld", this.width, this.height, this.fps);
 			loop.stop();
 			MainApplication.stage.setScene(gs.getScene());
 		});
-		UiButton creditsButton = new UiButton(gc, 500, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_credits.png")), () -> {
+		UiButton creditsButton = new UiButton(gc, 500, 400, 128, 128, new Image(Resource.toUrl("/images/button_credits.png", HomeScreen.class)), () -> {
 			WorldsScreen ws = new WorldsScreen(this.width, this.height, this.fps);
 			loop.stop();
 			MainApplication.stage.setScene(ws.getScene());
 		});
-		UiButton quitButton = new UiButton(gc, 700, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_quit.png")), () -> {
+		UiButton quitButton = new UiButton(gc, 700, 400, 128, 128, new Image(Resource.toUrl("/images/button_quit.png", HomeScreen.class)), () -> {
 			// Quit game
 			System.exit(0);
 		});

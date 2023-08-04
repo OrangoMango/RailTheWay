@@ -5,6 +5,8 @@ import javafx.scene.image.Image;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.media.AudioClip;
 
+import dev.webx.platform.resource.Resource;
+
 public class UiButton{
 	private double x, y, w, h;
 	private Image image;
@@ -12,7 +14,7 @@ public class UiButton{
 	private GraphicsContext gc;
 	private volatile boolean hovering;
 
-	private static final AudioClip SELECT_SOUND = new AudioClip(UiButton.class.getResource("/audio/select.wav").toExternalForm());
+	private static final AudioClip SELECT_SOUND = new AudioClip(Resource.toUrl("/audio/select.wav", UiButton.class));
 
 	public UiButton(GraphicsContext gc, double x, double y, double w, double h, Image image, Runnable onClick){
 		this.gc = gc;

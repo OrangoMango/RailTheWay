@@ -8,12 +8,14 @@ import javafx.scene.media.AudioClip;
 import com.orangomango.railway.Util;
 import com.orangomango.railway.ui.GameScreen;
 
+import dev.webfx.platform.resource.Resource;
+
 public class Carriage{
 	private static final double SPEED = 3;
-	private static final Image IMAGE = new Image(Carriage.class.getResourceAsStream("/images/carriage.png"));
+	private static final Image IMAGE = new Image(Resource.toUrl("/images/carriage.png", Carriage.class));
 
-	private static final AudioClip STATION_SOUND = new AudioClip(Carriage.class.getResource("/audio/station.wav").toExternalForm());
-	private static final AudioClip STATION_MISSED = new AudioClip(Carriage.class.getResource("/audio/station_missed.wav").toExternalForm());
+	private static final AudioClip STATION_SOUND = new AudioClip(Resource.toUrl("/audio/station.wav", Carriage.class));
+	private static final AudioClip STATION_MISSED = new AudioClip(Resource.toUrl("/audio/station_missed.wav", Carriage.class));
 
 	private double x, y;
 	private World world;

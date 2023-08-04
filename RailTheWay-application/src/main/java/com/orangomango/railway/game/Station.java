@@ -4,13 +4,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 import dev.webfx.platform.scheduler.Scheduler;
+import dev.webfx.platform.resource.Resource;
 
 public class Station extends Tile{
 	private TrainType trainType;
 	private boolean using;
 	private int index;
-	private static final Image IMAGE = new Image(Station.class.getResourceAsStream("/images/station.png"));
-	private static final Image TIMER_IMAGE = new Image(Station.class.getResourceAsStream("/images/station_timer.png"));
+	private static final Image IMAGE = new Image(Resource.toUrl("/images/station.png", Station.class));
+	private static final Image TIMER_IMAGE = new Image(Resource.toUrl("/images/station_timer.png", Station.class));
 
 	public Station(int x, int y, TrainType type){
 		super(x, y);

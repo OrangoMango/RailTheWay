@@ -3,11 +3,13 @@ package com.orangomango.railway.game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+import dev.webfx.platform.resource.Resource;
+
 public class Tile{
 	protected int x, y;
 	private int index;
 	public static double WIDTH, HEIGHT;
-	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/grass.png"));
+	private static final Image IMAGE = new Image(Resource.toUrl("/images/grass.png", Tile.class));
 
 	public Tile(int x, int y){
 		this.x = x;

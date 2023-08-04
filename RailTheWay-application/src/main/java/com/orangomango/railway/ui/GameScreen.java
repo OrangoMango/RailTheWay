@@ -21,6 +21,7 @@ import com.orangomango.railway.MainApplication;
 import com.orangomango.railway.game.*;
 
 import dev.webfx.platform.scheduler.Scheduler;
+import dev.webfx.platform.resource.Resource;
 
 public class GameScreen{
 	private int width, height, fps;
@@ -36,12 +37,12 @@ public class GameScreen{
 	private String worldName;
 
 	public static int score, arrivals, misses;
-	private static final Font FONT = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
-	private static final Font FONT_45 = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 45);
-	private static final Image WARNING_IMAGE = new Image(GameScreen.class.getResourceAsStream("/images/warning.png"));
+	private static final Font FONT = Font.loadFont(Resource.toUrl("/fonts/font.ttf", GameScreen.class), 25);
+	private static final Font FONT_45 = Font.loadFont(Resource.toUrl("/fonts/font.ttf", GameScreen.class), 45);
+	private static final Image WARNING_IMAGE = new Image(Resource.toUrl("/images/warning.png", GameScreen.class));
 
-	private static final AudioClip GAME_OVER_SOUND = new AudioClip(GameScreen.class.getResource("/audio/gameover.wav").toExternalForm());
-	private static final AudioClip WARNING_SOUND = new AudioClip(GameScreen.class.getResource("/audio/warning.wav").toExternalForm());
+	private static final AudioClip GAME_OVER_SOUND = new AudioClip(Resource.toUrl("/audio/gameover.wav", GameScreen.class));
+	private static final AudioClip WARNING_SOUND = new AudioClip(Resource.toUrl("/audio/warning.wav", GameScreen.class));
 
 	public GameScreen(String worldName, int w, int h, int fps){
 		this.worldName = worldName;

@@ -8,6 +8,8 @@ import java.util.*;
 
 import com.orangomango.railway.Util;
 
+import dev.webfx.platform.resource.Resource;
+
 public class Track extends Tile{
 	private World world;
 	private byte connection; // 0 0 0 0 -> N E S W
@@ -15,9 +17,9 @@ public class Track extends Tile{
 	private byte direction;
 	private byte baseDirection;
 	private boolean isInput;
-	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/track.png"));
+	private static final Image IMAGE = new Image(Resource.toUrl("/images/track.png", Track.class));
 
-	private static final AudioClip TRACK_SOUND = new AudioClip(Track.class.getResource("/audio/track_change.wav").toExternalForm());
+	private static final AudioClip TRACK_SOUND = new AudioClip(Resource.toUrl("/audio/track_change.wav", Track.class));
 
 	public Track(World world, int x, int y){
 		super(x, y);

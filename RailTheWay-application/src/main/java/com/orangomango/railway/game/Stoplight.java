@@ -6,13 +6,15 @@ import javafx.scene.media.AudioClip;
 
 import java.util.*;
 
+import dev.webfx.platform.resource.Resource;
+
 public class Stoplight extends Tile{
 	private boolean go = true;
 	private byte target;
 	private World world;
-	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/stoplight.png"));
+	private static final Image IMAGE = new Image(Resource.toUrl("/images/stoplight.png", Stoplight.class));
 
-	private static final AudioClip STOPLIGHT = new AudioClip(Stoplight.class.getResource("/audio/stoplight.wav").toExternalForm());
+	private static final AudioClip STOPLIGHT = new AudioClip(Resource.toUrl("/audio/stoplight.wav", Stoplight.class));
 
 	public Stoplight(World world, int x, int y, byte target){
 		super(x, y);

@@ -16,11 +16,13 @@ import java.util.*;
 
 import com.orangomango.railway.MainApplication;
 
+import dev.webfx.platform.resource.Resource;
+
 public class WorldsScreen{
 	private int width, height, fps;
 	private List<UiButton> buttons = new ArrayList<>();
-	private Image background = new Image(getClass().getResourceAsStream("/images/background.png"));
-	private static final Font FONT = Font.loadFont(HomeScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
+	private Image background = new Image(Resource.toUrl("/images/background.png", WorldsScreen.class));
+	private static final Font FONT = Font.loadFont(Resource.toUrl("/fonts/font.ttf", WorldsScreen.class), 25);
 
 	public WorldsScreen(int w, int h, int fps){
 		this.width = w;
@@ -60,11 +62,11 @@ public class WorldsScreen{
 			}
 		});
 
-		UiButton map1 = new UiButton(gc, 310, 200, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(1, loop));
-		UiButton map2 = new UiButton(gc, 510, 200, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(2, loop));
-		UiButton map3 = new UiButton(gc, 710, 200, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(3, loop));
-		UiButton map4 = new UiButton(gc, 410, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(4, loop));
-		UiButton map5 = new UiButton(gc, 610, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(5, loop));
+		UiButton map1 = new UiButton(gc, 310, 200, 128, 128, new Image(Resource.toUrl("/images/button_play.png", WorldsScreen.class)), () -> play(1, loop));
+		UiButton map2 = new UiButton(gc, 510, 200, 128, 128, new Image(Resource.toUrl("/images/button_play.png", WorldsScreen.class)), () -> play(2, loop));
+		UiButton map3 = new UiButton(gc, 710, 200, 128, 128, new Image(Resource.toUrl("/images/button_play.png", WorldsScreen.class)), () -> play(3, loop));
+		UiButton map4 = new UiButton(gc, 410, 400, 128, 128, new Image(Resource.toUrl("/images/button_play.png", WorldsScreen.class)), () -> play(4, loop));
+		UiButton map5 = new UiButton(gc, 610, 400, 128, 128, new Image(Resource.toUrl("/images/button_play.png", WorldsScreen.class)), () -> play(5, loop));
 
 		this.buttons.add(map1);
 		this.buttons.add(map2);
