@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+
+    <exported-packages>
+        <source-packages/>
+        <resource-package>audio</resource-package>
+        <resource-package>fonts</resource-package>
+        <resource-package>images</resource-package>
+        <resource-package>worlds</resource-package>
+    </exported-packages>
+
+    <dependencies>
+        <used-by-source-modules/>
+    </dependencies>
+
+    <providers>
+        <provider interface="javafx.application.Application">com.orangomango.railway.MainApplication</provider>
+    </providers>
+
+</project>
