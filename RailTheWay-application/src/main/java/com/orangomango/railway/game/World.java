@@ -3,50 +3,48 @@ package com.orangomango.railway.game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.io.*;
 import java.util.Random;
+
+import dev.webfx.platform.resource.Resource;
 
 public class World{
 	private int width, height;
 	private Tile[][] world;
 
-	public World(InputStream inputStream){
+	public World(String name){
 		Random random = new Random();
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-			String[] header = reader.readLine().split(" ");
-			this.width = Integer.parseInt(header[0].split("x")[0]);
-			this.height = Integer.parseInt(header[0].split("x")[1]);
-			Tile.WIDTH = Integer.parseInt(header[1].split("x")[0]);
-			Tile.HEIGHT = Integer.parseInt(header[1].split("x")[1]);
-			this.world = new Tile[this.width][this.height];
-			for (int y = 0; y < this.height; y++){
-				String line = reader.readLine();
-				for (int x = 0; x < this.width; x++){
-					String[] data = line.split("\t")[x].split(";");
-					int type = Integer.parseInt(data[0]);
-					Tile tile = null;
-					if (type == 0){
-						tile = new Tile(x, y);
-					} else if (type == 1){
-						tile = new Track(this, x, y);
-						if (data.length == 2){
-							((Track)tile).setBaseDirection(Byte.parseByte(data[1]));
-						}
-					} else if (type == 2){
-						tile = new Station(x, y, TrainType.values()[Integer.parseInt(data[1])]);
-					} else if (type == 3){
-						tile = new Stoplight(this, x, y, Byte.parseByte(data[1]));
-					} else if (type == 4){
-						tile = new Track(this, x, y);
-						((Track)tile).setInput(true);
+
+		String[] worldData = Resource.getText(Resource.toUrl(name, World.class)).split("\n");
+		int lineCounter = 0;
+		String[] header = worldData[lineCounter++].split(" ");
+		this.width = Integer.parseInt(header[0].split("x")[0]);
+		this.height = Integer.parseInt(header[0].split("x")[1]);
+		Tile.WIDTH = Integer.parseInt(header[1].split("x")[0]);
+		Tile.HEIGHT = Integer.parseInt(header[1].split("x")[1]);
+		this.world = new Tile[this.width][this.height];
+		for (int y = 0; y < this.height; y++){
+			String line = worldData[lineCounter++];
+			for (int x = 0; x < this.width; x++){
+				String[] data = line.split("\t")[x].split(";");
+				int type = Integer.parseInt(data[0]);
+				Tile tile = null;
+				if (type == 0){
+					tile = new Tile(x, y);
+				} else if (type == 1){
+					tile = new Track(this, x, y);
+					if (data.length == 2){
+						((Track)tile).setBaseDirection(Byte.parseByte(data[1]));
 					}
-					this.world[x][y] = tile;
+				} else if (type == 2){
+					tile = new Station(x, y, TrainType.values()[Integer.parseInt(data[1])]);
+				} else if (type == 3){
+					tile = new Stoplight(this, x, y, Byte.parseByte(data[1]));
+				} else if (type == 4){
+					tile = new Track(this, x, y);
+					((Track)tile).setInput(true);
 				}
+				this.world[x][y] = tile;
 			}
-			reader.close();
-		} catch (IOException ex){
-			ex.printStackTrace();
 		}
 
 		updateConnections();

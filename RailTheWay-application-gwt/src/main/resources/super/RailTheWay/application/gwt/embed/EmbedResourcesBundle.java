@@ -12,11 +12,15 @@ public interface EmbedResourcesBundle extends ClientBundle {
     @Source("dev/webfx/platform/meta/exe/exe.properties")
     TextResource r1();
 
+    @Source("worlds/world1.wld")
+    TextResource r2();
+
 
 
     final class ProvidedGwtResourceBundle extends GwtResourceBundleBase {
         public ProvidedGwtResourceBundle() {
             registerResource("dev/webfx/platform/meta/exe/exe.properties", R.r1());
+            registerResource("worlds/world1.wld", R.r2());
 
         }
     }

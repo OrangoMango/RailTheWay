@@ -61,7 +61,7 @@ public class GameScreen{
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		pane.getChildren().add(canvas);
 
-		this.world = new World(getClass().getResourceAsStream("/worlds/"+this.worldName));
+		this.world = new World("/worlds/"+this.worldName);
 		this.translateX = (this.width-250-this.world.getWidth()*Tile.WIDTH)/2;
 		this.translateY = (this.height-this.world.getHeight()*Tile.HEIGHT)/2;
 

@@ -9,6 +9,10 @@
         <resource-package>worlds</resource-package>
     </exported-packages>
 
+    <embed-resources>
+        <resource>worlds/world1.wld</resource>
+    </embed-resources>
+
     <dependencies>
         <used-by-source-modules/>
     </dependencies>

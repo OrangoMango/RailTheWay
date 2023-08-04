@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.media.AudioClip;
 
-import dev.webx.platform.resource.Resource;
+import dev.webfx.platform.resource.Resource;
 
 public class UiButton{
 	private double x, y, w, h;
