@@ -2,6 +2,7 @@ package com.orangomango.railway.game;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.media.AudioClip;
 
 import java.util.*;
 
@@ -15,6 +16,8 @@ public class Track extends Tile{
 	private byte baseDirection;
 	private boolean isInput;
 	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/track.png"));
+
+	private static final AudioClip TRACK_SOUND = new AudioClip(Track.class.getResource("/audio/track_change.wav").toExternalForm());
 
 	public Track(World world, int x, int y){
 		super(x, y);
@@ -62,6 +65,7 @@ public class Track extends Tile{
 		index++;
 		index %= options.size();
 		this.direction = options.get(index);
+		TRACK_SOUND.play();
 	}
 
 	public byte getDirection(){

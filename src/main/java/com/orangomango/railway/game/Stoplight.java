@@ -2,6 +2,7 @@ package com.orangomango.railway.game;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.media.AudioClip;
 
 import java.util.*;
 
@@ -10,6 +11,8 @@ public class Stoplight extends Tile{
 	private byte target;
 	private World world;
 	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/stoplight.png"));
+
+	private static final AudioClip STOPLIGHT = new AudioClip(Stoplight.class.getResource("/audio/stoplight.wav").toExternalForm());
 
 	public Stoplight(World world, int x, int y, byte target){
 		super(x, y);
@@ -43,6 +46,7 @@ public class Stoplight extends Tile{
 				}
 			}
 		}
+		STOPLIGHT.play();
 	}
 
 	public void render(GraphicsContext gc){

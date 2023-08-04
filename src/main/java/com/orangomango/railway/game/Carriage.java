@@ -3,13 +3,17 @@ package com.orangomango.railway.game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
+import javafx.scene.media.AudioClip;
 
 import com.orangomango.railway.Util;
 import com.orangomango.railway.ui.GameScreen;
 
 public class Carriage{
 	private static final double SPEED = 3;
-	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/carriage.png"));
+	private static final Image IMAGE = new Image(Carriage.class.getResourceAsStream("/images/carriage.png"));
+
+	private static final AudioClip STATION_SOUND = new AudioClip(Carriage.class.getResource("/audio/station.wav").toExternalForm());
+	private static final AudioClip STATION_MISSED = new AudioClip(Carriage.class.getResource("/audio/station_missed.wav").toExternalForm());
 
 	private double x, y;
 	private World world;
@@ -65,10 +69,15 @@ public class Carriage{
 			if (this.parent == null){
 				if (!this.stationPassed){
 					Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Station && ((Station)t).getType() == this.trainType).findAny().ifPresent(t -> {
-						this.moving = false;
-						GameScreen.score += 100;
-						this.stationPassed = true;
-						Util.schedule(() -> this.moving = true, 1500);
+						boolean available = ((Station)t).use(1500);
+						if (available){
+							this.moving = false;
+							STATION_SOUND.play();
+							GameScreen.score += 100;
+							GameScreen.arrivals++;
+							this.stationPassed = true;
+							Util.schedule(() -> this.moving = true, 1500);
+						}
 					});
 				}
 
@@ -90,6 +99,8 @@ public class Carriage{
 		if (!isInside()){
 			if (this.currentTile != null && this.parent == null && !this.stationPassed){
 				GameScreen.score -= 75;
+				GameScreen.misses++;
+				STATION_MISSED.play();
 			}
 			this.currentTile = null;
 		}

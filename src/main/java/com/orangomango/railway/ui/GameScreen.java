@@ -10,10 +10,13 @@ import javafx.util.Duration;
 import javafx.scene.input.MouseButton;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.image.WritableImage;
+import javafx.scene.media.AudioClip;
 
 import java.util.*;
 
 import com.orangomango.railway.Util;
+import com.orangomango.railway.MainApplication;
 import com.orangomango.railway.game.*;
 
 public class GameScreen{
@@ -22,19 +25,28 @@ public class GameScreen{
 	private World world;
 	private List<Train> trains = new ArrayList<>();
 	private Timeline loop;
+	private WritableImage canvasImage;
+	private long startTime, playedTime;
 	private volatile Tile warningTile;
 	private volatile boolean warningBlink;
 	private volatile boolean gameRunning = true;
 
-	public static int score;
+	public static int score, arrivals, misses;
 	private static final Font FONT = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
+	private static final Font FONT_45 = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 45);
 	private static final Image WARNING_IMAGE = new Image(GameScreen.class.getResourceAsStream("/images/warning.png"));
+
+	private static final AudioClip GAME_OVER_SOUND = new AudioClip(GameScreen.class.getResource("/audio/gameover.wav").toExternalForm());
+	private static final AudioClip WARNING_SOUND = new AudioClip(GameScreen.class.getResource("/audio/warning.wav").toExternalForm());
 
 	public GameScreen(int w, int h, int fps){
 		this.width = w;
 		this.height = h;
 		this.fps = fps;
+		this.startTime = System.currentTimeMillis();
 		score = 0;
+		arrivals = 0;
+		misses = 0;
 	}
 
 	public Scene getScene(){
@@ -50,8 +62,11 @@ public class GameScreen{
 		Thread creator = new Thread(() -> {
 			while (this.gameRunning){
 				try {
+					WARNING_SOUND.play();
 					this.warningTile = Util.getRandomStart(this.world);
-					Thread.sleep(5000);
+					Thread.sleep(1000);
+					WARNING_SOUND.play();
+					Thread.sleep(3000); // every 4s (3+1)
 					createRandomTrain(this.warningTile);
 				} catch (InterruptedException ex){
 					ex.printStackTrace();
@@ -78,11 +93,17 @@ public class GameScreen{
 			final double ex = e.getX()-this.translateX;
 			final double ey = e.getY()-this.translateY;
 			if (e.getButton() == MouseButton.PRIMARY){
-				Tile tile = this.world.getTileAt((int)(ex/Tile.WIDTH), (int)(ey/Tile.HEIGHT));
-				if (tile instanceof Track && ((Track)tile).getConnectionAmount() == 3){
-					((Track)tile).changeDirection();
-				} else if (tile instanceof Stoplight){
-					((Stoplight)tile).toggle(this.trains);
+				if (this.gameRunning){
+					Tile tile = this.world.getTileAt((int)(ex/Tile.WIDTH), (int)(ey/Tile.HEIGHT));
+					if (tile instanceof Track && ((Track)tile).getConnectionAmount() == 3){
+						((Track)tile).changeDirection();
+					} else if (tile instanceof Stoplight){
+						((Stoplight)tile).toggle(this.trains);
+					}
+				} else {
+					this.loop.stop();
+					HomeScreen hs = new HomeScreen(this.width, this.height, this.fps);
+					MainApplication.stage.setScene(hs.getScene());
 				}
 			}
 		});
@@ -122,8 +143,25 @@ public class GameScreen{
 
 	private void update(GraphicsContext gc){
 		gc.clearRect(0, 0, this.width, this.height);
-		gc.setFill(Color.BLACK);
+		gc.setFill(Color.web("#616161"));
 		gc.fillRect(0, 0, this.width, this.height);
+
+		long diff = System.currentTimeMillis()-this.startTime;
+
+		if (!this.gameRunning){
+			gc.drawImage(this.canvasImage, 0, 0);
+			gc.save();
+			gc.setGlobalAlpha(0.6);
+			gc.setFill(Color.BLACK);
+			gc.fillRect(0, 0, this.width, this.height);
+			gc.restore();
+			gc.setFill(Color.RED);
+			gc.setFont(FONT_45);
+			gc.setTextAlign(TextAlignment.CENTER);
+			String formatTime = formatTime((int)this.playedTime);
+			gc.fillText("GAME OVER\nYou scored "+score+",\n"+arrivals+" trains passed and\n"+misses+" trains missed the station.\nYou were able to control your\ntrains for just "+formatTime+" :(\n\nYour trains crashed!", this.width/2, this.height/2-175);
+			return;
+		}
 
 		gc.save();
 		gc.translate(this.translateX, this.translateY);
@@ -146,7 +184,7 @@ public class GameScreen{
 		gc.setFill(Color.WHITE);
 		gc.setFont(FONT);
 		gc.setTextAlign(TextAlignment.CENTER);
-		gc.fillText("Score: "+this.score, this.width-150, 150);
+		gc.fillText("Score: "+score+"\nArrivals: "+arrivals+"\nMisses: "+misses+"\nSurvived: "+formatTime((int)diff), this.width-150, 150);
 
 		try {
 			List<Tile> tiles = this.trains.stream().flatMap(train -> train.getTrain().stream()).map(c -> c.getCurrentTile()).filter(c -> c != null).toList();
@@ -157,7 +195,9 @@ public class GameScreen{
 			for (Map.Entry<Tile, Integer> entry : occurences.entrySet()){
 				if (entry.getValue() > 1){
 					// GAME OVER
-					this.loop.stop();
+					GAME_OVER_SOUND.play();
+					this.playedTime = diff;
+					this.canvasImage = gc.getCanvas().snapshot(null, new WritableImage(this.width, this.height));
 					this.gameRunning = false;
 					return;
 				}
@@ -175,5 +215,11 @@ public class GameScreen{
 				i--;
 			}
 		}
+	}
+
+	private String formatTime(int time){
+		int seconds = time/1000 % 60;
+		int minutes = time/60000;
+		return minutes+":"+(seconds < 10 ? "0"+seconds : seconds);
 	}
 }
