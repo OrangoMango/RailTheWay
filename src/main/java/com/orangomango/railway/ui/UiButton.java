@@ -10,6 +10,7 @@ public class UiButton{
 	private Image image;
 	private Runnable onClick;
 	private GraphicsContext gc;
+	private volatile boolean hovering;
 
 	private static final AudioClip SELECT_SOUND = new AudioClip(UiButton.class.getResource("/audio/select.wav").toExternalForm());
 
@@ -31,7 +32,16 @@ public class UiButton{
 		}
 	}
 
+	public void hover(double x, double y){
+		Rectangle2D rect = new Rectangle2D(this.x, this.y, this.w, this.h);
+		this.hovering = rect.contains(x, y);
+	}
+
 	public void render(){
-		gc.drawImage(this.image, this.x, this.y, this.w, this.h);
+		if (this.hovering){
+			gc.drawImage(this.image, this.x-12, this.y-12, this.w+25, this.h+25);
+		} else {
+			gc.drawImage(this.image, this.x, this.y, this.w, this.h);		
+		}
 	}
 }

@@ -30,6 +30,7 @@ public class GameScreen{
 	private volatile Tile warningTile;
 	private volatile boolean warningBlink;
 	private volatile boolean gameRunning = true;
+	private String worldName;
 
 	public static int score, arrivals, misses;
 	private static final Font FONT = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
@@ -39,7 +40,8 @@ public class GameScreen{
 	private static final AudioClip GAME_OVER_SOUND = new AudioClip(GameScreen.class.getResource("/audio/gameover.wav").toExternalForm());
 	private static final AudioClip WARNING_SOUND = new AudioClip(GameScreen.class.getResource("/audio/warning.wav").toExternalForm());
 
-	public GameScreen(int w, int h, int fps){
+	public GameScreen(String worldName, int w, int h, int fps){
+		this.worldName = worldName;
 		this.width = w;
 		this.height = h;
 		this.fps = fps;
@@ -55,7 +57,7 @@ public class GameScreen{
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		pane.getChildren().add(canvas);
 
-		this.world = new World(getClass().getResourceAsStream("/world1.wld"));
+		this.world = new World(getClass().getResourceAsStream("/worlds/"+this.worldName));
 		this.translateX = (this.width-250-this.world.getWidth()*Tile.WIDTH)/2;
 		this.translateY = (this.height-this.world.getHeight()*Tile.HEIGHT)/2;
 
@@ -66,7 +68,7 @@ public class GameScreen{
 					this.warningTile = Util.getRandomStart(this.world);
 					Thread.sleep(1000);
 					WARNING_SOUND.play();
-					Thread.sleep(3000); // every 4s (3+1)
+					Thread.sleep(4000); // every 5s (4+1)
 					createRandomTrain(this.warningTile);
 				} catch (InterruptedException ex){
 					ex.printStackTrace();
@@ -159,7 +161,7 @@ public class GameScreen{
 			gc.setFont(FONT_45);
 			gc.setTextAlign(TextAlignment.CENTER);
 			String formatTime = formatTime((int)this.playedTime);
-			gc.fillText("GAME OVER\nYou scored "+score+",\n"+arrivals+" trains passed and\n"+misses+" trains missed the station.\nYou were able to control your\ntrains for just "+formatTime+" :(\n\nYour trains crashed!", this.width/2, this.height/2-175);
+			gc.fillText("GAME OVER\nYou scored "+score+",\n"+arrivals+" trains passed and\n"+misses+" trains missed the station.\nYou were able to control your\ntrains for just "+formatTime+" :(\n\nClick on the screen to exit", this.width/2, this.height/2-175);
 			return;
 		}
 
@@ -184,7 +186,7 @@ public class GameScreen{
 		gc.setFill(Color.WHITE);
 		gc.setFont(FONT);
 		gc.setTextAlign(TextAlignment.CENTER);
-		gc.fillText("Score: "+score+"\nArrivals: "+arrivals+"\nMisses: "+misses+"\nSurvived: "+formatTime((int)diff), this.width-150, 150);
+		gc.fillText("Score: "+score+"\nArrivals: "+arrivals+"\nMisses: "+misses+"\nSurvived: "+formatTime((int)diff), this.width-125, this.height/2-100);
 
 		try {
 			List<Tile> tiles = this.trains.stream().flatMap(train -> train.getTrain().stream()).map(c -> c.getCurrentTile()).filter(c -> c != null).toList();

@@ -40,12 +40,14 @@ public class HomeScreen{
 		loop.play();
 
 		UiButton playButton = new UiButton(gc, 300, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> {
-			GameScreen gs = new GameScreen(this.width, this.height, this.fps);
+			GameScreen gs = new GameScreen("world1.wld", this.width, this.height, this.fps);
 			loop.stop();
 			MainApplication.stage.setScene(gs.getScene());
 		});
 		UiButton creditsButton = new UiButton(gc, 500, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_credits.png")), () -> {
-			
+			WorldsScreen ws = new WorldsScreen(this.width, this.height, this.fps);
+			loop.stop();
+			MainApplication.stage.setScene(ws.getScene());
 		});
 		UiButton quitButton = new UiButton(gc, 700, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_quit.png")), () -> {
 			// Quit game
@@ -83,6 +85,6 @@ public class HomeScreen{
 		gc.setFill(Color.BLACK);
 		gc.setFont(FONT);
 		gc.setTextAlign(TextAlignment.CENTER);
-		gc.fillText("RAIL-the-WAY by OrangoMango, v1.0, Indie Dev Game Jam 2023. Music from freesound.org", this.width/2, this.height-50);
+		gc.fillText("RAIL-the-WAY by OrangoMango, v1.0, Indie Dev Game Jam 2023 (Made in 72h). Music from freesound.org", this.width/2, this.height-50);
 	}
 }
