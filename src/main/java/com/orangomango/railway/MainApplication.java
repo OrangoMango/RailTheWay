@@ -8,9 +8,9 @@ import javafx.scene.media.MediaPlayer;
 import com.orangomango.railway.ui.HomeScreen;
 
 public class MainApplication extends Application{
-	private static final int WIDTH = 575; //1150;
-	private static final int HEIGHT = 375; //750;
-	private static final double SCALE = 0.5; //1;
+	private static final int WIDTH = 1150;
+	private static final int HEIGHT = 750;
+	private static final double SCALE = 1;
 	private static final int FPS = 40;
 	public static Stage stage;
 	private static final Media BACKGROUND_MUSIC = new Media(MainApplication.class.getResource("/audio/background.mp3").toExternalForm());
