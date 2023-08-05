@@ -83,16 +83,20 @@ public class HomeScreen{
 		gc.scale(this.scale, this.scale);
 
 		gc.drawImage(this.title, 190, 130);
+		gc.setFont(FONT);
+		gc.setTextAlign(TextAlignment.CENTER);
 
-		for (UiButton ub : this.buttons){
+		String[] labels = new String[]{"Random", "Select", "Quit"};
+		for (int i = 0; i < this.buttons.size(); i++){
+			UiButton ub = this.buttons.get(i);
 			ub.render();
+			gc.setFill(Color.BLUE);
+			gc.fillText(labels[i], ub.getX()+64, ub.getY()-15);
 		}
 
 		gc.drawImage(this.rails, 300, 525);
 
 		gc.setFill(Color.BLACK);
-		gc.setFont(FONT);
-		gc.setTextAlign(TextAlignment.CENTER);
 		gc.fillText("RAIL-the-WAY by OrangoMango, v1.0, Indie Dev Game Jam 2023 (Made in 72h). Music from freesound.org", 1150/2, 750-50);
 
 		gc.restore();

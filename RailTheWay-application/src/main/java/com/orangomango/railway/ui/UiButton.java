@@ -26,6 +26,14 @@ public class UiButton{
 		this.onClick = onClick;
 	}
 
+	public double getX(){
+		return this.x;
+	}
+
+	public double getY(){
+		return this.y;
+	}
+
 	public void click(double x, double y){
 		Rectangle2D rect = new Rectangle2D(this.x, this.y, this.w, this.h);
 		if (rect.contains(x, y)){

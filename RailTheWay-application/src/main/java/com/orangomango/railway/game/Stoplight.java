@@ -9,7 +9,7 @@ import java.util.*;
 import dev.webfx.platform.resource.Resource;
 
 public class Stoplight extends Tile{
-	private boolean go = true;
+	private boolean go = false;
 	private byte target;
 	private World world;
 	private static final Image IMAGE = new Image(Resource.toUrl("/images/stoplight.png", Stoplight.class));

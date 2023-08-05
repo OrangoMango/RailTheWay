@@ -67,7 +67,7 @@ public class GameScreen{
 		this.translateX = (1150-250-this.world.getWidth()*Tile.WIDTH)/2;
 		this.translateY = (750-this.world.getHeight()*Tile.HEIGHT)/2;
 
-		Scheduler.schedulePeriodic(5000, scheduled -> {
+		Scheduler.schedulePeriodic(4200, scheduled -> {
 			if (this.gameRunning){
 				if (this.warningTile != null) createRandomTrain(this.warningTile); // Skip first time
 				WARNING_SOUND.play();
@@ -156,7 +156,7 @@ public class GameScreen{
 			gc.setFill(Color.BLACK);
 			gc.fillRect(0, 0, 1150, 750);
 			gc.restore();
-			gc.setFill(Color.RED);
+			gc.setFill(Color.WHITE);
 			gc.setFont(FONT_45);
 			gc.setTextAlign(TextAlignment.CENTER);
 			String formatTime = formatTime((int)this.playedTime);
