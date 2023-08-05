@@ -53,7 +53,7 @@ public class HomeScreen{
 		});
 		UiButton quitButton = new UiButton(gc, 700, 400, 128, 128, new Image(Resource.toUrl("/images/button_quit.png", HomeScreen.class)), () -> {
 			// Quit game
-			System.exit(0);
+			//System.exit(0);
 		});
 
 		this.buttons.add(playButton);
