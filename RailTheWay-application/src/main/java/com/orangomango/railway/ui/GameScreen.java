@@ -25,6 +25,7 @@ import dev.webfx.platform.resource.Resource;
 
 public class GameScreen{
 	private int width, height, fps;
+	private double scale;
 	private double translateX, translateY;
 	private World world;
 	private List<Train> trains = new ArrayList<>();
@@ -44,11 +45,12 @@ public class GameScreen{
 	private static final AudioClip GAME_OVER_SOUND = new AudioClip(Resource.toUrl("/audio/gameover.wav", GameScreen.class));
 	private static final AudioClip WARNING_SOUND = new AudioClip(Resource.toUrl("/audio/warning.wav", GameScreen.class));
 
-	public GameScreen(String worldName, int w, int h, int fps){
+	public GameScreen(String worldName, int w, int h, int fps, double scale){
 		this.worldName = worldName;
 		this.width = w;
 		this.height = h;
 		this.fps = fps;
+		this.scale = scale;
 		this.startTime = System.currentTimeMillis();
 		score = 0;
 		arrivals = 0;
@@ -62,8 +64,8 @@ public class GameScreen{
 		pane.getChildren().add(canvas);
 
 		this.world = new World("/worlds/"+this.worldName);
-		this.translateX = (this.width-250-this.world.getWidth()*Tile.WIDTH)/2;
-		this.translateY = (this.height-this.world.getHeight()*Tile.HEIGHT)/2;
+		this.translateX = (1150-250-this.world.getWidth()*Tile.WIDTH)/2;
+		this.translateY = (750-this.world.getHeight()*Tile.HEIGHT)/2;
 
 		Scheduler.schedulePeriodic(5000, scheduled -> {
 			if (this.gameRunning){
@@ -85,8 +87,8 @@ public class GameScreen{
 		});
 
 		canvas.setOnMousePressed(e -> {
-			final double ex = e.getX()-this.translateX;
-			final double ey = e.getY()-this.translateY;
+			final double ex = e.getX()/this.scale-this.translateX;
+			final double ey = e.getY()/this.scale-this.translateY;
 			if (e.getButton() == MouseButton.PRIMARY){
 				if (this.gameRunning){
 					Tile tile = this.world.getTileAt((int)(ex/Tile.WIDTH), (int)(ey/Tile.HEIGHT));
@@ -97,7 +99,7 @@ public class GameScreen{
 					}
 				} else {
 					this.loop.stop();
-					HomeScreen hs = new HomeScreen(this.width, this.height, this.fps);
+					HomeScreen hs = new HomeScreen(this.width, this.height, this.fps, this.scale);
 					MainApplication.stage.setScene(hs.getScene());
 				}
 			}
@@ -144,18 +146,22 @@ public class GameScreen{
 
 		long diff = System.currentTimeMillis()-this.startTime;
 
+		gc.save();
+		gc.scale(this.scale, this.scale);
+
 		if (!this.gameRunning){
-			gc.drawImage(this.canvasImage, 0, 0);
+			gc.drawImage(this.canvasImage, 0, 0, 1150, 750);
 			gc.save();
 			gc.setGlobalAlpha(0.6);
 			gc.setFill(Color.BLACK);
-			gc.fillRect(0, 0, this.width, this.height);
+			gc.fillRect(0, 0, 1150, 750);
 			gc.restore();
 			gc.setFill(Color.RED);
 			gc.setFont(FONT_45);
 			gc.setTextAlign(TextAlignment.CENTER);
 			String formatTime = formatTime((int)this.playedTime);
-			gc.fillText("GAME OVER\nYou scored "+score+",\n"+arrivals+" trains passed and\n"+misses+" trains missed the station.\nYou were able to control your\ntrains for just "+formatTime+" :(\n\nClick on the screen to exit", this.width/2, this.height/2-175);
+			gc.fillText("GAME OVER\nYou scored "+score+",\n"+arrivals+" trains passed and\n"+misses+" trains missed the station.\nYou were able to control your\ntrains for just "+formatTime+" :(\n\nClick on the screen to exit", 1150/2, 750/2-175);
+			gc.restore();
 			return;
 		}
 
@@ -180,7 +186,9 @@ public class GameScreen{
 		gc.setFill(Color.WHITE);
 		gc.setFont(FONT);
 		gc.setTextAlign(TextAlignment.CENTER);
-		gc.fillText("Score: "+score+"\nArrivals: "+arrivals+"\nMisses: "+misses+"\nSurvived: "+formatTime((int)diff), this.width-125, this.height/2-100);
+		gc.fillText("Score: "+score+"\nArrivals: "+arrivals+"\nMisses: "+misses+"\nSurvived: "+formatTime((int)diff), 1150-125, 750/2-100);
+
+		gc.restore();
 
 		try {
 			List<Tile> tiles = this.trains.stream().flatMap(train -> train.getTrain().stream()).map(c -> c.getCurrentTile()).filter(c -> c != null).collect(Collectors.toList());

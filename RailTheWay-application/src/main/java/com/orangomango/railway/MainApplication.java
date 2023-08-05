@@ -10,8 +10,9 @@ import com.orangomango.railway.ui.HomeScreen;
 import dev.webfx.platform.resource.Resource;
 
 public class MainApplication extends Application{
-	private static final int WIDTH = 1150;
-	private static final int HEIGHT = 750;
+	private static final int WIDTH = 575; //1150;
+	private static final int HEIGHT = 375; //750;
+	private static final double SCALE = 0.5; //1;
 	private static final int FPS = 40;
 	public static Stage stage;
 	private static final Media BACKGROUND_MUSIC = new Media(Resource.toUrl("/audio/background.mp3", MainApplication.class));
@@ -25,7 +26,7 @@ public class MainApplication extends Application{
 		music.setCycleCount(MediaPlayer.INDEFINITE);
 		music.play();
 		
-		HomeScreen gs = new HomeScreen(WIDTH, HEIGHT, FPS);
+		HomeScreen gs = new HomeScreen(WIDTH, HEIGHT, FPS, SCALE);
 
 		stage.setScene(gs.getScene());
 		stage.setResizable(false);

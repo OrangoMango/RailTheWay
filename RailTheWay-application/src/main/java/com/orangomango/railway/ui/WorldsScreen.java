@@ -20,14 +20,16 @@ import dev.webfx.platform.resource.Resource;
 
 public class WorldsScreen{
 	private int width, height, fps;
+	private double scale;
 	private List<UiButton> buttons = new ArrayList<>();
 	private Image background = new Image(Resource.toUrl("/images/background.png", WorldsScreen.class));
 	private static final Font FONT = Font.loadFont(Resource.toUrl("/fonts/font.ttf", WorldsScreen.class), 25);
 
-	public WorldsScreen(int w, int h, int fps){
+	public WorldsScreen(int w, int h, int fps, double scale){
 		this.width = w;
 		this.height = h;
 		this.fps = fps;
+		this.scale = scale;
 	}
 
 	public Scene getScene(){
@@ -43,7 +45,7 @@ public class WorldsScreen{
 		canvas.setFocusTraversable(true);
 		canvas.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.ESCAPE){
-				HomeScreen hs = new HomeScreen(this.width, this.height, this.fps);
+				HomeScreen hs = new HomeScreen(this.width, this.height, this.fps, this.scale);
 				MainApplication.stage.setScene(hs.getScene());
 			}
 		});
@@ -51,14 +53,14 @@ public class WorldsScreen{
 		canvas.setOnMousePressed(e -> {
 			if (e.getButton() == MouseButton.PRIMARY){
 				for (UiButton ub : this.buttons){
-					ub.click(e.getX(), e.getY());
+					ub.click(e.getX()/this.scale, e.getY()/this.scale);
 				}
 			}
 		});
 
 		canvas.setOnMouseMoved(e -> {
 			for (UiButton ub : this.buttons){
-				ub.hover(e.getX(), e.getY());
+				ub.hover(e.getX()/this.scale, e.getY()/this.scale);
 			}
 		});
 
@@ -80,14 +82,17 @@ public class WorldsScreen{
 	}
 
 	private void play(int n, Timeline loop){
-		GameScreen gs = new GameScreen("world"+n+".wld", this.width, this.height, this.fps);
+		GameScreen gs = new GameScreen("world"+n+".wld", this.width, this.height, this.fps, this.scale);
 		loop.stop();
 		MainApplication.stage.setScene(gs.getScene());
 	}
 
 	private void update(GraphicsContext gc){
 		gc.clearRect(0, 0, this.width, this.height);
-		gc.drawImage(this.background, 0, 0, this.width, this.height);
+
+		gc.save();
+		gc.scale(this.scale, this.scale);
+		gc.drawImage(this.background, 0, 0, 1150, 750);
 
 		for (UiButton ub : this.buttons){
 			ub.render();
@@ -96,6 +101,7 @@ public class WorldsScreen{
 		gc.setFill(Color.BLACK);
 		gc.setFont(FONT);
 		gc.setTextAlign(TextAlignment.CENTER);
-		gc.fillText("Press ESCAPE to go back", this.width/2, this.height-50);
+		gc.fillText("Press ESCAPE to go back", 1150/2, 750-50);
+		gc.restore();
 	}
 }

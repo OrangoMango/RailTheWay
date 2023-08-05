@@ -19,16 +19,18 @@ import dev.webfx.platform.resource.Resource;
 
 public class HomeScreen{
 	private int width, height, fps;
+	private double scale;
 	private List<UiButton> buttons = new ArrayList<>();
 	private Image background = new Image(Resource.toUrl("/images/background.png", HomeScreen.class));
 	private Image rails = new Image(Resource.toUrl("/images/rails.png", HomeScreen.class));
 	private Image title = new Image(Resource.toUrl("/images/title.png", HomeScreen.class));
 	private static final Font FONT = Font.loadFont(Resource.toUrl("/fonts/font.ttf", HomeScreen.class), 25);
 
-	public HomeScreen(int w, int h, int fps){
+	public HomeScreen(int w, int h, int fps, double scale){
 		this.width = w;
 		this.height = h;
 		this.fps = fps;
+		this.scale = scale;
 	}
 
 	public Scene getScene(){
@@ -63,7 +65,7 @@ public class HomeScreen{
 		canvas.setOnMousePressed(e -> {
 			if (e.getButton() == MouseButton.PRIMARY){
 				for (UiButton ub : this.buttons){
-					ub.click(e.getX(), e.getY());
+					ub.click(e.getX()/this.scale, e.getY()/this.scale);
 				}
 			}
 		});
@@ -77,6 +79,9 @@ public class HomeScreen{
 		gc.clearRect(0, 0, this.width, this.height);
 		gc.drawImage(this.background, 0, 0, this.width, this.height);
 
+		gc.save();
+		gc.scale(this.scale, this.scale);
+
 		gc.drawImage(this.title, 190, 130);
 
 		for (UiButton ub : this.buttons){
@@ -88,6 +93,8 @@ public class HomeScreen{
 		gc.setFill(Color.BLACK);
 		gc.setFont(FONT);
 		gc.setTextAlign(TextAlignment.CENTER);
-		gc.fillText("RAIL-the-WAY by OrangoMango, v1.0, Indie Dev Game Jam 2023 (Made in 72h). Music from freesound.org", this.width/2, this.height-50);
+		gc.fillText("RAIL-the-WAY by OrangoMango, v1.0, Indie Dev Game Jam 2023 (Made in 72h). Music from freesound.org", 1150/2, 750-50);
+
+		gc.restore();
 	}
 }
