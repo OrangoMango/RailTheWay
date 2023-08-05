@@ -2,6 +2,7 @@ package com.orangomango.railway;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -28,6 +29,7 @@ public class MainApplication extends Application{
 
 		stage.setScene(gs.getScene());
 		stage.setResizable(false);
+		stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icon.png")));
 		stage.show();
 	}
 	
