@@ -67,7 +67,7 @@ public class GameScreen{
 		this.translateX = (1150-250-this.world.getWidth()*Tile.WIDTH)/2;
 		this.translateY = (750-this.world.getHeight()*Tile.HEIGHT)/2;
 
-		Scheduler.schedulePeriodic(4200, scheduled -> {
+		Scheduler.schedulePeriodic(5000, scheduled -> {
 			if (this.gameRunning){
 				if (this.warningTile != null) createRandomTrain(this.warningTile); // Skip first time
 				WARNING_SOUND.play();
@@ -160,7 +160,7 @@ public class GameScreen{
 			gc.setFont(FONT_45);
 			gc.setTextAlign(TextAlignment.CENTER);
 			String formatTime = formatTime((int)this.playedTime);
-			gc.fillText("GAME OVER\nYou scored "+score+",\n"+arrivals+" trains passed and\n"+misses+" trains missed the station.\nYou were able to control your\ntrains for just "+formatTime+" :(\n\nClick on the screen to exit", 1150/2, 750/2-175);
+			gc.fillText("GAME OVER\nYou scored "+score+",\n"+arrivals+" trains passed and\n"+misses+" trains missed the station.\nYou were able to control your\ntrains for just "+formatTime+" :(\n\nClick on the screen to exit", 1150/2-100, 750/2-175);
 			gc.restore();
 			return;
 		}

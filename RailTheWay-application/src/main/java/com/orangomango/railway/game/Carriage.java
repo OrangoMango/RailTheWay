@@ -13,6 +13,7 @@ import dev.webfx.platform.resource.Resource;
 public class Carriage{
 	private static final double SPEED = 3;
 	private static final Image IMAGE = new Image(Resource.toUrl("/images/carriage.png", Carriage.class));
+	private static final Image CARGO_IMAGE = new Image(Resource.toUrl("/images/cargo.png", Carriage.class));
 
 	private static final AudioClip STATION_SOUND = new AudioClip(Resource.toUrl("/audio/station.wav", Carriage.class));
 	private static final AudioClip STATION_MISSED = new AudioClip(Resource.toUrl("/audio/station_missed.wav", Carriage.class));
@@ -25,14 +26,29 @@ public class Carriage{
 	private Carriage parent;
 	private Tile currentTile;
 	private boolean stationPassed;
+	private boolean cargo;
+	private int cargoIndex;
 
 	public Carriage(World world, TrainType trainType, double x, double y, byte direction, Carriage parent){
 		this.x = x;
 		this.y = y;
+		this.cargo = Math.random() > 0.8;
 		this.trainType = trainType;
 		this.world = world;
 		this.direction = direction;
 		this.parent = parent;
+	}
+
+	public boolean isCargo(){
+		return this.cargo;
+	}
+
+	public void setCargo(boolean value){
+		this.cargo = value;
+	}
+
+	public void setCargoIndex(int i){
+		this.cargoIndex = i;
 	}
 
 	public void update(){
@@ -69,7 +85,7 @@ public class Carriage{
 
 			// Station
 			if (this.parent == null){
-				if (!this.stationPassed){
+				if (!this.stationPassed && !this.cargo){
 					Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Station && ((Station)t).getType() == this.trainType).findAny().ifPresent(t -> {
 						boolean available = ((Station)t).use(1500);
 						if (available){
@@ -144,7 +160,7 @@ public class Carriage{
 
 	public void render(GraphicsContext gc){
 		if (!isInside()) return;
-		int index = this.trainType.ordinal();
+		int index = this.cargo ? -1 : this.trainType.ordinal();
 		gc.save();
 		gc.translate(this.x, this.y);
 		if ((this.direction & 8) == 8){
@@ -156,7 +172,12 @@ public class Carriage{
 		} else if ((this.direction & 1) == 1){
 			gc.rotate(180);
 		}
-		gc.drawImage(IMAGE, 1+34*index, 1, 32, 32, -Tile.WIDTH/2, -Tile.HEIGHT/2, Tile.WIDTH, Tile.HEIGHT);
+
+		if (this.cargo){
+			gc.drawImage(CARGO_IMAGE, 1+34*this.cargoIndex, 1, 32, 32, -Tile.WIDTH/2, -Tile.HEIGHT/2, Tile.WIDTH, Tile.HEIGHT);
+		} else {
+			gc.drawImage(IMAGE, 1+34*index, 1, 32, 32, -Tile.WIDTH/2, -Tile.HEIGHT/2, Tile.WIDTH, Tile.HEIGHT);
+		}
 		gc.restore();
 	}
 }
