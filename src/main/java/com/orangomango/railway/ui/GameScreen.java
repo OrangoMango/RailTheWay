@@ -70,7 +70,7 @@ public class GameScreen{
 					this.warningTile = Util.getRandomStart(this.world);
 					Thread.sleep(1000);
 					WARNING_SOUND.play();
-					Thread.sleep(3200); // every 4.2s (3.2+1)
+					Thread.sleep(5000); // every 6s
 					createRandomTrain(this.warningTile);
 				} catch (InterruptedException ex){
 					ex.printStackTrace();
@@ -166,7 +166,7 @@ public class GameScreen{
 			gc.setFont(FONT_45);
 			gc.setTextAlign(TextAlignment.CENTER);
 			String formatTime = formatTime((int)this.playedTime);
-			gc.fillText("GAME OVER\nYou scored "+score+",\n"+arrivals+" trains passed and\n"+misses+" trains missed the station.\nYou were able to control your\ntrains for just "+formatTime+" :(\n\nClick on the screen to exit", 1150/2, 750/2-175);
+			gc.fillText("GAME OVER\nYou scored "+score+",\n"+arrivals+" trains passed and\n"+misses+" trains missed the station.\nYou were able to control your\ntrains for just "+formatTime+" :(\n\nClick on the screen to exit", 1150/2-100, 750/2-175);
 			gc.restore();
 			return;
 		}

@@ -62,17 +62,13 @@ public class WorldsScreen{
 			}
 		});
 
-		UiButton map1 = new UiButton(gc, 310, 200, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(1, loop));
-		UiButton map2 = new UiButton(gc, 510, 200, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(2, loop));
-		UiButton map3 = new UiButton(gc, 710, 200, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(3, loop));
-		UiButton map4 = new UiButton(gc, 410, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(4, loop));
-		UiButton map5 = new UiButton(gc, 610, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(5, loop));
+		UiButton map1 = new UiButton(gc, 310, 300, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(1, loop));
+		UiButton map2 = new UiButton(gc, 510, 300, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(2, loop));
+		UiButton map3 = new UiButton(gc, 710, 300, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(3, loop));
 
 		this.buttons.add(map1);
 		this.buttons.add(map2);
 		this.buttons.add(map3);
-		this.buttons.add(map4);
-		this.buttons.add(map5);
 
 		Scene scene = new Scene(pane, this.width, this.height);
 		scene.setFill(Color.BLACK);
