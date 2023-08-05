@@ -28,6 +28,8 @@ public class Station extends Tile{
 				this.index = index[0];
 				index[0]++;
 			} else {
+				this.using = false;
+				this.index = 0;
 				scheduled.cancel();
 			}
 		});
