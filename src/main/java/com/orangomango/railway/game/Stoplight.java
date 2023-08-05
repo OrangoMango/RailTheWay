@@ -7,7 +7,7 @@ import javafx.scene.media.AudioClip;
 import java.util.*;
 
 public class Stoplight extends Tile{
-	private boolean go = true;
+	private boolean go = false;
 	private byte target;
 	private World world;
 	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/stoplight.png"));

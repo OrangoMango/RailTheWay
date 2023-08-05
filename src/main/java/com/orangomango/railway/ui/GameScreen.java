@@ -70,7 +70,7 @@ public class GameScreen{
 					this.warningTile = Util.getRandomStart(this.world);
 					Thread.sleep(1000);
 					WARNING_SOUND.play();
-					Thread.sleep(4000); // every 5s (4+1)
+					Thread.sleep(3200); // every 4.2s (3.2+1)
 					createRandomTrain(this.warningTile);
 				} catch (InterruptedException ex){
 					ex.printStackTrace();
@@ -162,7 +162,7 @@ public class GameScreen{
 			gc.setFill(Color.BLACK);
 			gc.fillRect(0, 0, 1150, 750);
 			gc.restore();
-			gc.setFill(Color.RED);
+			gc.setFill(Color.WHITE);
 			gc.setFont(FONT_45);
 			gc.setTextAlign(TextAlignment.CENTER);
 			String formatTime = formatTime((int)this.playedTime);
