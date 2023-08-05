@@ -18,6 +18,7 @@ public class Track extends Tile{
 	private byte baseDirection;
 	private boolean isInput;
 	private static final Image IMAGE = new Image(Resource.toUrl("/images/track.png", Track.class));
+	private static final Image IMAGE_FLIPPED = new Image(Resource.toUrl("/images/track_flipped.png", Track.class));
 
 	private static final AudioClip TRACK_SOUND = new AudioClip(Resource.toUrl("/audio/track_change.wav", Track.class));
 
@@ -151,7 +152,7 @@ public class Track extends Tile{
 		gc.save();
 		gc.translate(this.x*WIDTH+WIDTH/2, this.y*HEIGHT+HEIGHT/2);
 		gc.rotate(rotate);
-		gc.drawImage(IMAGE, 1+34*index, 1, 32, 32, -WIDTH/2, -HEIGHT/2+(flip ? HEIGHT : 0), WIDTH, HEIGHT*(flip ? -1 : 1));
+		gc.drawImage(flip ? IMAGE_FLIPPED : IMAGE, 1+34*index, 1, 32, 32, -WIDTH/2, -HEIGHT/2, WIDTH, HEIGHT);
 		gc.restore();
 	}
 }
