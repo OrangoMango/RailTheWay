@@ -165,8 +165,8 @@ public class GameScreen{
 			return;
 		}
 
-		//gc.save();
-		//gc.translate(this.translateX, this.translateY);
+		gc.save();
+		gc.translate(this.translateX, this.translateY);
 		this.world.render(gc);
 		for (int i = 0; i < this.trains.size(); i++){
 			Train train = this.trains.get(i);
@@ -174,11 +174,11 @@ public class GameScreen{
 			train.render(gc);
 		}
 
-		if (this.warningBlink){
+		if (this.warningBlink && this.warningTile != null){
 			gc.drawImage(WARNING_IMAGE, this.warningTile.getX()*Tile.WIDTH, this.warningTile.getY()*Tile.HEIGHT, 32, 32);
 		}
 
-		//gc.restore();
+		gc.restore();
 
 		if (this.score < 0){
 			this.score = 0; // Score min is 0
