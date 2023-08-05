@@ -11,9 +11,9 @@ import com.orangomango.railway.ui.HomeScreen;
 import dev.webfx.platform.resource.Resource;
 
 public class MainApplication extends Application{
-	private static final int HEIGHT = (int)Screen.getPrimary().getVisualBounds().getHeight(); //750;
-	private static final int WIDTH = HEIGHT*0.65; //1150;
-	private static final double SCALE = WIDTH/1150; //1;
+	private static final int WIDTH = 1150; //(int)Screen.getPrimary().getVisualBounds().getWidth();
+	private static final int HEIGHT = 750; //(int)(WIDTH*0.65);
+	private static final double SCALE = 1; //WIDTH/1150.0;
 	private static final int FPS = 40;
 	public static Stage stage;
 	private static final Media BACKGROUND_MUSIC = new Media(Resource.toUrl("/audio/background.mp3", MainApplication.class));

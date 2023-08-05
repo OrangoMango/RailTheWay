@@ -44,12 +44,12 @@ public class HomeScreen{
 		loop.play();
 
 		UiButton playButton = new UiButton(gc, 300, 400, 128, 128, new Image(Resource.toUrl("/images/button_play.png", HomeScreen.class)), () -> {
-			GameScreen gs = new GameScreen("world1.wld", this.width, this.height, this.fps);
+			GameScreen gs = new GameScreen("world1.wld", this.width, this.height, this.fps, this.scale);
 			loop.stop();
 			MainApplication.stage.setScene(gs.getScene());
 		});
 		UiButton creditsButton = new UiButton(gc, 500, 400, 128, 128, new Image(Resource.toUrl("/images/button_credits.png", HomeScreen.class)), () -> {
-			WorldsScreen ws = new WorldsScreen(this.width, this.height, this.fps);
+			WorldsScreen ws = new WorldsScreen(this.width, this.height, this.fps, this.scale);
 			loop.stop();
 			MainApplication.stage.setScene(ws.getScene());
 		});

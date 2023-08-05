@@ -89,7 +89,7 @@
                         <list>dev/webfx/platform/meta/exe/[^/]+$</list>
                         <list>fonts/[^/]+$</list>
                         <list>images/[^/]+$</list>
-                        <list>images/checkbox/[^/]+$</list>
+                        <list>javafx/scene/control/skin/checkbox/[^/]+$</list>
                         <list>worlds/[^/]+$</list>
                     </resourcesList>
 
