@@ -16,6 +16,7 @@ import java.util.*;
 import com.orangomango.railway.MainApplication;
 
 import dev.webfx.platform.resource.Resource;
+import dev.webfx.platform.shutdown.Shutdown;
 
 public class HomeScreen{
 	private int width, height, fps;
@@ -56,7 +57,7 @@ public class HomeScreen{
 		});
 		UiButton quitButton = new UiButton(gc, 700, 400, 128, 128, new Image(Resource.toUrl("/images/button_quit.png", HomeScreen.class)), () -> {
 			// Quit game
-			//System.exit(0);
+			Shutdown.softwareShutdown(true, 0);
 		});
 
 		this.buttons.add(playButton);

@@ -9,6 +9,7 @@ module RailTheWay.application {
     requires javafx.media;
     requires webfx.platform.resource;
     requires webfx.platform.scheduler;
+    requires webfx.platform.shutdown;
 
     // Exported packages
     exports com.orangomango.railway;
