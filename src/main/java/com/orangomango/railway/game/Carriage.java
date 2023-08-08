@@ -113,7 +113,7 @@ public class Carriage{
 		}
 
 		if (!isInside()){
-			if (this.currentTile != null && this.parent == null && !this.stationPassed){
+			if (this.currentTile != null && this.parent == null && !this.stationPassed && !this.cargo){
 				GameScreen.score -= 75;
 				GameScreen.misses++;
 				STATION_MISSED.play();
