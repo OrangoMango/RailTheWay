@@ -20,6 +20,7 @@ public class WorldsScreen{
 	private int width, height, fps;
 	private double scale;
 	private List<UiButton> buttons = new ArrayList<>();
+	private UiSlider slider;
 	private Image background = new Image(getClass().getResourceAsStream("/images/background.png"));
 	private static final Font FONT = Font.loadFont(HomeScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
 
@@ -35,6 +36,8 @@ public class WorldsScreen{
 		Canvas canvas = new Canvas(this.width, this.height);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		pane.getChildren().add(canvas);
+
+		this.slider = new UiSlider(gc, 100, 75, 950, 96, new Image(getClass().getResourceAsStream("/images/diff_easy.png")), new Image(getClass().getResourceAsStream("/images/diff_difficult.png")), v -> GameScreen.TRAIN_COOLDOWN = (int)(11000*(1-v)));
 
 		Timeline loop = new Timeline(new KeyFrame(Duration.millis(1000.0/this.fps), e -> update(gc)));
 		loop.setCycleCount(Animation.INDEFINITE);
@@ -53,6 +56,12 @@ public class WorldsScreen{
 				for (UiButton ub : this.buttons){
 					ub.click(e.getX()/this.scale, e.getY()/this.scale);
 				}
+			}
+		});
+
+		canvas.setOnMouseDragged(e -> {
+			if (e.getButton() == MouseButton.PRIMARY){
+				this.slider.drag(e.getX()/this.scale, e.getY()/this.scale);
 			}
 		});
 
@@ -91,6 +100,8 @@ public class WorldsScreen{
 		for (UiButton ub : this.buttons){
 			ub.render();
 		}
+
+		this.slider.render();
 
 		gc.setFill(Color.BLACK);
 		gc.setFont(FONT);

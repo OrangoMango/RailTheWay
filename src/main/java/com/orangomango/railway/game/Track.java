@@ -146,6 +146,7 @@ public class Track extends Tile{
 				rotate = 90;
 			}
 		}
+
 		gc.save();
 		gc.translate(this.x*WIDTH+WIDTH/2, this.y*HEIGHT+HEIGHT/2);
 		gc.rotate(rotate);

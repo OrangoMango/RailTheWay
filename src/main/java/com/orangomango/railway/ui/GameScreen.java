@@ -34,6 +34,7 @@ public class GameScreen{
 	private String worldName;
 
 	public static int score, arrivals, misses;
+	public static int TRAIN_COOLDOWN = 5500;
 	private static final Font FONT = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
 	private static final Font FONT_45 = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 45);
 	private static final Image WARNING_IMAGE = new Image(GameScreen.class.getResourceAsStream("/images/warning.png"));
@@ -70,7 +71,7 @@ public class GameScreen{
 					this.warningTile = Util.getRandomStart(this.world);
 					Thread.sleep(1000);
 					WARNING_SOUND.play();
-					Thread.sleep(5000); // every 6s
+					Thread.sleep(TRAIN_COOLDOWN);
 					createRandomTrain(this.warningTile);
 				} catch (InterruptedException ex){
 					ex.printStackTrace();
@@ -141,7 +142,7 @@ public class GameScreen{
 			offX = 1;
 			offY = 0;
 		}
-		Train train = new Train(this.world, random.nextInt(5)+2, tile.getX()*Tile.WIDTH+Tile.WIDTH/2, tile.getY()*Tile.HEIGHT+Tile.HEIGHT/2, offX, offY, dir, TrainType.values()[random.nextInt(TrainType.values().length)]);
+		Train train = new Train(this.world, random.nextInt(5)+2, tile.getX()*Tile.WIDTH+Tile.WIDTH/2, tile.getY()*Tile.HEIGHT+Tile.HEIGHT/2, offX, offY, dir, this.world.getRandomTrains().get(random.nextInt(this.world.getRandomTrains().size())));
 		this.trains.add(train);
 	}
 

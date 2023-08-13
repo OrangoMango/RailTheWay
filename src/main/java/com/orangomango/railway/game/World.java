@@ -4,11 +4,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.io.*;
-import java.util.Random;
+import java.util.*;
 
 public class World{
 	private int width, height;
 	private Tile[][] world;
+	private List<TrainType> randomTrains = new ArrayList<>();
 
 	public World(InputStream inputStream){
 		Random random = new Random();
@@ -19,6 +20,9 @@ public class World{
 			this.height = Integer.parseInt(header[0].split("x")[1]);
 			Tile.WIDTH = Integer.parseInt(header[1].split("x")[0]);
 			Tile.HEIGHT = Integer.parseInt(header[1].split("x")[1]);
+			for (String rt : header[2].split(";")){
+				randomTrains.add(TrainType.values()[Integer.parseInt(rt)]);
+			}
 			this.world = new Tile[this.width][this.height];
 			for (int y = 0; y < this.height; y++){
 				String line = reader.readLine();
@@ -58,6 +62,10 @@ public class World{
 
 	public int getHeight(){
 		return this.height;
+	}
+
+	public List<TrainType> getRandomTrains(){
+		return this.randomTrains;
 	}
 
 	private void updateConnections(){
