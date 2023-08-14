@@ -148,14 +148,6 @@ public class Carriage{
 		return this.x >= 0 && this.y >= 0 && this.x <= this.world.getWidth()*Tile.WIDTH && this.y <= this.world.getHeight()*Tile.HEIGHT;
 	}
 
-	public double getX(){
-		return this.x;
-	}
-
-	public double getY(){
-		return this.y;
-	}
-
 	public void render(GraphicsContext gc){
 		if (!isInside()) return;
 		int index = this.cargo ? -1 : this.trainType.ordinal();

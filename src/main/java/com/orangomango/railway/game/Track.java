@@ -9,7 +9,7 @@ import java.util.*;
 import com.orangomango.railway.Util;
 
 public class Track extends Tile{
-	private World world;
+	protected World world;
 	private byte connection; // 0 0 0 0 -> N E S W
 	private int connectionAmount;
 	private byte direction;

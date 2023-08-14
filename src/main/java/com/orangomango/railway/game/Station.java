@@ -36,6 +36,7 @@ public class Station extends Tile{
 		return this.trainType;
 	}
 
+	@Override
 	public void render(GraphicsContext gc){
 		int idx = this.trainType.ordinal();
 		gc.drawImage(IMAGE, 1+34*idx, 1, 32, 32, this.x*WIDTH, this.y*HEIGHT, WIDTH, HEIGHT);

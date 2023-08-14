@@ -46,6 +46,8 @@ public class World{
 						((Track)tile).setInput(true);
 					} else if (type == 5){
 						tile = new Road(x, y);
+					} else if (type == 6){
+						tile = new CrossingGate(this, x, y, Integer.parseInt(data[1]) == 1);
 					}
 					this.world[x][y] = tile;
 				}

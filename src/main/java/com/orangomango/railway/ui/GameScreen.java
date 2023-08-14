@@ -25,6 +25,7 @@ public class GameScreen{
 	private double translateX, translateY;
 	private World world;
 	private List<Train> trains = new ArrayList<>();
+	private List<Car> cars = new ArrayList<>();
 	private Timeline loop;
 	private WritableImage canvasImage;
 	private long startTime, playedTime;
@@ -32,9 +33,6 @@ public class GameScreen{
 	private volatile boolean warningBlink;
 	private volatile boolean gameRunning = true;
 	private String worldName;
-
-	// DEBUG
-	private Car car;
 
 	public static int score, arrivals, misses;
 	public static int TRAIN_COOLDOWN = 5500;
@@ -67,7 +65,8 @@ public class GameScreen{
 		this.translateX = (1150-250-this.world.getWidth()*Tile.WIDTH)/2;
 		this.translateY = (750-this.world.getHeight()*Tile.HEIGHT)/2;
 
-		this.car = new Car(this.world, 8*Tile.WIDTH+Tile.WIDTH/2, 4*Tile.HEIGHT+Tile.HEIGHT/2, (byte)4);
+		this.cars.add(new Car(this.world, 8*Tile.WIDTH+Tile.WIDTH/2, 4*Tile.HEIGHT+Tile.HEIGHT/2, (byte)4));
+		this.cars.add(new Car(this.world, 13*Tile.WIDTH+Tile.WIDTH/2, 4*Tile.HEIGHT+Tile.HEIGHT/2, (byte)4));
 
 		Thread creator = new Thread(() -> {
 			while (this.gameRunning){
@@ -109,6 +108,8 @@ public class GameScreen{
 						((Track)tile).changeDirection();
 					} else if (tile instanceof Stoplight){
 						((Stoplight)tile).toggle(this.trains);
+					} else if (tile instanceof CrossingGate){
+						((CrossingGate)tile).toggle(this.cars);
 					}
 				} else {
 					this.loop.stop();
@@ -186,9 +187,10 @@ public class GameScreen{
 			train.render(gc);
 		}
 
-		// DEBUG
-		this.car.update();
-		this.car.render(gc);
+		for (Car car : this.cars){
+			car.update(this.cars);
+			car.render(gc);
+		}
 
 		if (this.warningBlink){
 			gc.drawImage(WARNING_IMAGE, this.warningTile.getX()*Tile.WIDTH, this.warningTile.getY()*Tile.HEIGHT, 32, 32);
@@ -207,7 +209,8 @@ public class GameScreen{
 		gc.restore();
 
 		try {
-			List<Tile> tiles = this.trains.stream().flatMap(train -> train.getTrain().stream()).map(c -> c.getCurrentTile()).filter(c -> c != null).toList();
+			List<Tile> tiles = new ArrayList<Tile>(this.trains.stream().flatMap(train -> train.getTrain().stream()).map(c -> c.getCurrentTile()).filter(c -> c != null).toList());
+			tiles.addAll(this.cars.stream().map(c -> c.getCurrentTile()).filter(c -> c != null).distinct().toList());
 			Map<Tile, Integer> occurences = new HashMap<>();
 			for (Tile t : tiles){
 				occurences.put(t, occurences.getOrDefault(t, 0)+1);
