@@ -29,7 +29,7 @@ public class GameScreen{
 	private Timeline loop;
 	private WritableImage canvasImage;
 	private long startTime, playedTime;
-	private volatile Tile warningTile;
+	private List<Tile> warningTiles = new ArrayList<>();
 	private volatile boolean warningBlink;
 	private volatile boolean gameRunning = true;
 	private String worldName;
@@ -61,22 +61,28 @@ public class GameScreen{
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		pane.getChildren().add(canvas);
 
-		this.world = new World(getClass().getResourceAsStream("/worlds/"+this.worldName));
+		this.world = new World(getClass().getResourceAsStream("/worlds/"+this.worldName), this.cars);
 		this.translateX = (1150-250-this.world.getWidth()*Tile.WIDTH)/2;
 		this.translateY = (750-this.world.getHeight()*Tile.HEIGHT)/2;
-
-		this.cars.add(new Car(this.world, 8*Tile.WIDTH+Tile.WIDTH/2, 4*Tile.HEIGHT+Tile.HEIGHT/2, (byte)4));
-		this.cars.add(new Car(this.world, 13*Tile.WIDTH+Tile.WIDTH/2, 4*Tile.HEIGHT+Tile.HEIGHT/2, (byte)4));
 
 		Thread creator = new Thread(() -> {
 			while (this.gameRunning){
 				try {
+					int n = Math.random() < 0.7 ? 1 : (Math.random() < 0.6 ? 2 : 3);
+					if (score < 700) n = 1;
 					WARNING_SOUND.play();
-					this.warningTile = Util.getRandomStart(this.world);
+					Tile[] warningTile = Util.getRandomStart(this.world, n);
+					n = warningTile.length; // fix
+					for (int i = 0; i < n; i++){
+						this.warningTiles.add(warningTile[i]);
+					}
 					Thread.sleep(1000);
 					WARNING_SOUND.play();
 					Thread.sleep(TRAIN_COOLDOWN);
-					createRandomTrain(this.warningTile);
+					for (int i = 0; i < n; i++){
+						createRandomTrain(warningTile[i]);
+						this.warningTiles.remove(warningTile[i]);
+					}
 				} catch (InterruptedException ex){
 					ex.printStackTrace();
 				}
@@ -193,7 +199,10 @@ public class GameScreen{
 		}
 
 		if (this.warningBlink){
-			gc.drawImage(WARNING_IMAGE, this.warningTile.getX()*Tile.WIDTH, this.warningTile.getY()*Tile.HEIGHT, 32, 32);
+			for (int i = 0; i < this.warningTiles.size(); i++){
+				Tile wt = this.warningTiles.get(i);
+				gc.drawImage(WARNING_IMAGE, wt.getX()*Tile.WIDTH, wt.getY()*Tile.HEIGHT, 32, 32);
+			}
 		}
 
 		gc.restore();

@@ -17,12 +17,15 @@ public class Car{
 	private byte direction;
 	private boolean moving = true;
 	private Tile currentTile;
+	private int carIndex;
 
 	public Car(World world, double x, double y, byte direction){
 		this.world = world;
 		this.x = x;
 		this.y = y;
 		this.direction = direction;
+		Random random = new Random();
+		this.carIndex = random.nextInt(4);
 	}
 
 	public void update(List<Car> cars){
@@ -128,7 +131,7 @@ public class Car{
 		} else if ((this.direction & 1) == 1){
 			gc.rotate(270);
 		}
-		gc.drawImage(IMAGE, -Tile.WIDTH/2, -Tile.HEIGHT/2, Tile.WIDTH, Tile.HEIGHT);
+		gc.drawImage(IMAGE, 1+34*this.carIndex, 1, 32, 32, -Tile.WIDTH/2, -Tile.HEIGHT/2, Tile.WIDTH, Tile.HEIGHT);
 		gc.restore();
 	}
 }

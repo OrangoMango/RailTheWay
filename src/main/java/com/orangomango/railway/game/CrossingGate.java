@@ -12,7 +12,7 @@ import com.orangomango.railway.Util;
 public class CrossingGate extends Track{
 	private boolean vertical;
 	private int imageIndex = 8;
-	private boolean open = true;
+	private volatile boolean open = true;
 	private boolean animating;
 	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/crossingGate.png"));
 
@@ -44,12 +44,14 @@ public class CrossingGate extends Track{
 		// Auto-open
 		if (!this.open){
 			Util.schedule(() -> {
-				this.imageIndex = 0;
-				setOn(cars, true);
+				if (!this.open){
+					setOn(cars, true);
+				}
 			}, 4000);
 		}
 
 		// Start the animation
+		this.imageIndex = this.open ? 0 : 8;
 		Timeline animation = new Timeline(new KeyFrame(Duration.millis(50), e -> this.imageIndex += this.open ? 1 : -1));
 		animation.setCycleCount(8);
 		animation.setOnFinished(e -> this.animating = false);

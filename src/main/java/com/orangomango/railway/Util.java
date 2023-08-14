@@ -19,7 +19,7 @@ public class Util{
 		}
 	}
 
-	public static Tile getRandomStart(World world){
+	public static Tile[] getRandomStart(World world, int n){
 		List<Tile> tiles = new ArrayList<>();
 		for (int y = 0; y < world.getHeight(); y++){
 			for (int x = 0; x < world.getWidth(); x++){
@@ -32,7 +32,12 @@ public class Util{
 			}
 		}
 		Random r = new Random();
-		return tiles.get(r.nextInt(tiles.size()));
+		n = Math.min(tiles.size(), n); // Setup N
+		Tile[] output = new Tile[n];
+		for (int i = 0; i < n; i++){
+			output[i] = tiles.remove(r.nextInt(tiles.size()));
+		}
+		return output;
 	}
 
 	public static void schedule(Runnable r, int delay){

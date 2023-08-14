@@ -11,7 +11,7 @@ public class World{
 	private Tile[][] world;
 	private List<TrainType> randomTrains = new ArrayList<>();
 
-	public World(InputStream inputStream){
+	public World(InputStream inputStream, List<Car> cars){
 		Random random = new Random();
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -52,6 +52,14 @@ public class World{
 					this.world[x][y] = tile;
 				}
 			}
+			int carsN = Integer.parseInt(reader.readLine().split(" ")[1]);
+			for (int i = 0; i < carsN; i++){
+				String line = reader.readLine();
+				int xp = Integer.parseInt(line.split(" ")[1]);
+				int yp = Integer.parseInt(line.split(" ")[2]);
+				byte dir = Byte.parseByte(line.split(" ")[3]);
+				cars.add(new Car(this, xp*Tile.WIDTH+Tile.WIDTH/2, yp*Tile.HEIGHT+Tile.HEIGHT/2, dir));
+			}
 			reader.close();
 		} catch (IOException ex){
 			ex.printStackTrace();
@@ -88,10 +96,10 @@ public class World{
 					if (w != null && w instanceof Track) track.addConnection((byte)1);
 				} else if (tile instanceof Road){
 					Road road = (Road)tile;
-					if (n != null && n instanceof Road) road.addConnection((byte)8);
-					if (e != null && e instanceof Road) road.addConnection((byte)4);
-					if (s != null && s instanceof Road) road.addConnection((byte)2);
-					if (w != null && w instanceof Road) road.addConnection((byte)1);
+					if (n != null && (n instanceof Road || n instanceof CrossingGate)) road.addConnection((byte)8);
+					if (e != null && (e instanceof Road || e instanceof CrossingGate)) road.addConnection((byte)4);
+					if (s != null && (s instanceof Road || s instanceof CrossingGate)) road.addConnection((byte)2);
+					if (w != null && (w instanceof Road || w instanceof CrossingGate)) road.addConnection((byte)1);
 				}
 			}
 		}
