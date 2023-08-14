@@ -44,6 +44,8 @@ public class World{
 					} else if (type == 4){
 						tile = new Track(this, x, y);
 						((Track)tile).setInput(true);
+					} else if (type == 5){
+						tile = new Road(x, y);
 					}
 					this.world[x][y] = tile;
 				}
@@ -72,16 +74,22 @@ public class World{
 		for (int x = 0; x < this.width; x++){
 			for (int y = 0; y < this.height; y++){
 				Tile tile = this.world[x][y];
+				Tile n = getTileAt(x, y-1);
+				Tile e = getTileAt(x+1, y);
+				Tile s = getTileAt(x, y+1);
+				Tile w = getTileAt(x-1, y);
 				if (tile instanceof Track){
 					Track track = (Track)tile;
-					Tile n = getTileAt(x, y-1);
-					Tile e = getTileAt(x+1, y);
-					Tile s = getTileAt(x, y+1);
-					Tile w = getTileAt(x-1, y);
 					if (n != null && n instanceof Track) track.addConnection((byte)8);
 					if (e != null && e instanceof Track) track.addConnection((byte)4);
 					if (s != null && s instanceof Track) track.addConnection((byte)2);
 					if (w != null && w instanceof Track) track.addConnection((byte)1);
+				} else if (tile instanceof Road){
+					Road road = (Road)tile;
+					if (n != null && n instanceof Road) road.addConnection((byte)8);
+					if (e != null && e instanceof Road) road.addConnection((byte)4);
+					if (s != null && s instanceof Road) road.addConnection((byte)2);
+					if (w != null && w instanceof Road) road.addConnection((byte)1);
 				}
 			}
 		}

@@ -9,7 +9,7 @@ import java.util.*;
 import com.orangomango.railway.Util;
 
 public class Stoplight extends Tile{
-	private boolean go = false;
+	private boolean go = true;
 	private byte target;
 	private World world;
 	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/stoplight.png"));

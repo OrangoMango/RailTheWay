@@ -33,6 +33,9 @@ public class GameScreen{
 	private volatile boolean gameRunning = true;
 	private String worldName;
 
+	// DEBUG
+	private Car car;
+
 	public static int score, arrivals, misses;
 	public static int TRAIN_COOLDOWN = 5500;
 	private static final Font FONT = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
@@ -63,6 +66,8 @@ public class GameScreen{
 		this.world = new World(getClass().getResourceAsStream("/worlds/"+this.worldName));
 		this.translateX = (1150-250-this.world.getWidth()*Tile.WIDTH)/2;
 		this.translateY = (750-this.world.getHeight()*Tile.HEIGHT)/2;
+
+		this.car = new Car(this.world, 8*Tile.WIDTH+Tile.WIDTH/2, 4*Tile.HEIGHT+Tile.HEIGHT/2, (byte)4);
 
 		Thread creator = new Thread(() -> {
 			while (this.gameRunning){
@@ -180,6 +185,10 @@ public class GameScreen{
 			train.update();
 			train.render(gc);
 		}
+
+		// DEBUG
+		this.car.update();
+		this.car.render(gc);
 
 		if (this.warningBlink){
 			gc.drawImage(WARNING_IMAGE, this.warningTile.getX()*Tile.WIDTH, this.warningTile.getY()*Tile.HEIGHT, 32, 32);
