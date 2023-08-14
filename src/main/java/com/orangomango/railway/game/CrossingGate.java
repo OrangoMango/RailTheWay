@@ -9,12 +9,12 @@ import java.util.List;
 
 import com.orangomango.railway.Util;
 
-public class CrossingGate extends Track{
+public class CrossingGate extends Rail{
 	private boolean vertical;
 	private int imageIndex = 8;
 	private volatile boolean open = true;
 	private boolean animating;
-	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/crossingGate.png"));
+	private static final Image IMAGE = new Image(Rail.class.getResourceAsStream("/images/crossingGate.png"));
 
 	public CrossingGate(World world, int x, int y, boolean vertical){
 		super(world, x, y);

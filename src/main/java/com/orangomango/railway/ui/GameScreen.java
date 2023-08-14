@@ -69,7 +69,7 @@ public class GameScreen{
 			while (this.gameRunning){
 				try {
 					int n = Math.random() < 0.7 ? 1 : (Math.random() < 0.6 ? 2 : 3);
-					if (score < 700) n = 1;
+					if (score < 600) n = 1;
 					WARNING_SOUND.play();
 					Tile[] warningTile = Util.getRandomStart(this.world, n);
 					n = warningTile.length; // fix
@@ -110,8 +110,8 @@ public class GameScreen{
 			if (e.getButton() == MouseButton.PRIMARY){
 				if (this.gameRunning){
 					Tile tile = this.world.getTileAt((int)(ex/Tile.WIDTH), (int)(ey/Tile.HEIGHT));
-					if (tile instanceof Track && ((Track)tile).getConnectionAmount() == 3){
-						((Track)tile).changeDirection();
+					if (tile instanceof Rail && ((Rail)tile).getConnectionAmount() == 3){
+						((Rail)tile).changeDirection();
 					} else if (tile instanceof Stoplight){
 						((Stoplight)tile).toggle(this.trains);
 					} else if (tile instanceof CrossingGate){

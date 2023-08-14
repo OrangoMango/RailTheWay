@@ -8,18 +8,18 @@ import java.util.*;
 
 import com.orangomango.railway.Util;
 
-public class Track extends Tile{
+public class Rail extends Tile{
 	protected World world;
 	private byte connection; // 0 0 0 0 -> N E S W
 	private int connectionAmount;
 	private byte direction;
 	private byte baseDirection;
 	private boolean isInput;
-	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/track.png"));
+	private static final Image IMAGE = new Image(Rail.class.getResourceAsStream("/images/rail.png"));
 
-	private static final AudioClip TRACK_SOUND = new AudioClip(Track.class.getResource("/audio/track_change.wav").toExternalForm());
+	private static final AudioClip TRACK_SOUND = new AudioClip(Rail.class.getResource("/audio/rail_change.wav").toExternalForm());
 
-	public Track(World world, int x, int y){
+	public Rail(World world, int x, int y){
 		super(x, y);
 		this.world = world;
 	}
@@ -38,7 +38,7 @@ public class Track extends Tile{
 		this.connectionAmount++;
 	}
 
-	// Only for double tracks
+	// Only for double rails
 	public void setBaseDirection(byte dir){
 		this.baseDirection = dir;
 	}
@@ -94,7 +94,7 @@ public class Track extends Tile{
 		} else if (this.connectionAmount == 3){
 			index = this.direction == Util.invertDirection(this.baseDirection) ? 3 : 4;
 
-			// Flip the double track when needed
+			// Flip the double rail when needed
 			if ((this.baseDirection & 8) == 8 && (this.connection & 14) == 14){
 				flip = true;
 			}

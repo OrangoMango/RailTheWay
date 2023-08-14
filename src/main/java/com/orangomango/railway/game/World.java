@@ -33,17 +33,17 @@ public class World{
 					if (type == 0){
 						tile = new Tile(x, y);
 					} else if (type == 1){
-						tile = new Track(this, x, y);
+						tile = new Rail(this, x, y);
 						if (data.length == 2){
-							((Track)tile).setBaseDirection(Byte.parseByte(data[1]));
+							((Rail)tile).setBaseDirection(Byte.parseByte(data[1]));
 						}
 					} else if (type == 2){
 						tile = new Station(x, y, TrainType.values()[Integer.parseInt(data[1])]);
 					} else if (type == 3){
 						tile = new Stoplight(this, x, y, Byte.parseByte(data[1]));
 					} else if (type == 4){
-						tile = new Track(this, x, y);
-						((Track)tile).setInput(true);
+						tile = new Rail(this, x, y);
+						((Rail)tile).setInput(true);
 					} else if (type == 5){
 						tile = new Road(x, y);
 					} else if (type == 6){
@@ -88,12 +88,12 @@ public class World{
 				Tile e = getTileAt(x+1, y);
 				Tile s = getTileAt(x, y+1);
 				Tile w = getTileAt(x-1, y);
-				if (tile instanceof Track){
-					Track track = (Track)tile;
-					if (n != null && n instanceof Track) track.addConnection((byte)8);
-					if (e != null && e instanceof Track) track.addConnection((byte)4);
-					if (s != null && s instanceof Track) track.addConnection((byte)2);
-					if (w != null && w instanceof Track) track.addConnection((byte)1);
+				if (tile instanceof Rail){
+					Rail rail = (Rail)tile;
+					if (n != null && n instanceof Rail) rail.addConnection((byte)8);
+					if (e != null && e instanceof Rail) rail.addConnection((byte)4);
+					if (s != null && s instanceof Rail) rail.addConnection((byte)2);
+					if (w != null && w instanceof Rail) rail.addConnection((byte)1);
 				} else if (tile instanceof Road){
 					Road road = (Road)tile;
 					if (n != null && (n instanceof Road || n instanceof CrossingGate)) road.addConnection((byte)8);

@@ -6,7 +6,7 @@ import javafx.scene.image.Image;
 public class Road extends Tile{
 	private byte connection; // 0 0 0 0 -> N E S W
 	private int connectionAmount;
-	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/road.png"));
+	private static final Image IMAGE = new Image(Rail.class.getResourceAsStream("/images/road.png"));
 
 	public Road(int x, int y){
 		super(x, y);

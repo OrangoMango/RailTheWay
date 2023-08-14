@@ -12,7 +12,7 @@ public class Stoplight extends Tile{
 	private boolean go = true;
 	private byte target;
 	private World world;
-	private static final Image IMAGE = new Image(Track.class.getResourceAsStream("/images/stoplight.png"));
+	private static final Image IMAGE = new Image(Rail.class.getResourceAsStream("/images/stoplight.png"));
 
 	private static final AudioClip STOPLIGHT = new AudioClip(Stoplight.class.getResource("/audio/stoplight.wav").toExternalForm());
 

@@ -25,7 +25,7 @@ public class Util{
 			for (int x = 0; x < world.getWidth(); x++){
 				if (x == 0 || y == 0 || x == world.getWidth()-1 || y == world.getHeight()-1){
 					Tile tile = world.getTileAt(x, y);
-					if (tile instanceof Track && ((Track)tile).isInput()){
+					if (tile instanceof Rail && ((Rail)tile).isInput()){
 						tiles.add(tile);
 					}
 				}

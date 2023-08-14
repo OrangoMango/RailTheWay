@@ -55,14 +55,14 @@ public class Carriage{
 		int worldX = (int)(this.x/Tile.WIDTH);
 		int worldY = (int)(this.y/Tile.HEIGHT);
 		Tile tile = this.world.getTileAt(worldX, worldY);
-		if (tile instanceof Track && Math.abs(this.x-(worldX*Tile.WIDTH+Tile.WIDTH/2)) < SPEED && Math.abs(this.y-(worldY*Tile.HEIGHT+Tile.HEIGHT/2)) < SPEED){
+		if (tile instanceof Rail && Math.abs(this.x-(worldX*Tile.WIDTH+Tile.WIDTH/2)) < SPEED && Math.abs(this.y-(worldY*Tile.HEIGHT+Tile.HEIGHT/2)) < SPEED){
 			// Fix the position
 			this.x = worldX*Tile.WIDTH+Tile.WIDTH/2;
 			this.y = worldY*Tile.HEIGHT+Tile.HEIGHT/2;
 			
-			Track track = (Track)tile;
-			int connAmount = track.getConnectionAmount();
-			byte connections = track.getConnections();
+			Rail rail = (Rail)tile;
+			int connAmount = rail.getConnectionAmount();
+			byte connections = rail.getConnections();
 			if ((connections & Util.invertDirection(this.direction)) == Util.invertDirection(this.direction)){
 				connAmount--;
 			}
@@ -70,14 +70,14 @@ public class Carriage{
 				byte finalDir = (byte)(connections & Util.invertBits(Util.invertDirection(this.direction))); // 1001 0100 -> 1001 0001 -> 1001 1110 -> 1000
 				this.direction = finalDir;
 			} else if (connAmount == 2){
-				byte trackDir = track.getDirection(); // 1010 1000 -> 1000
-				if (track.getBaseDirection() == Util.invertDirection(this.direction)){
-					this.direction = trackDir;
-				} else if (track.getBaseDirection() == this.direction || Util.invertDirection(this.direction) == trackDir){
-					this.direction = track.getBaseDirection();
+				byte railDir = rail.getDirection(); // 1010 1000 -> 1000
+				if (rail.getBaseDirection() == Util.invertDirection(this.direction)){
+					this.direction = railDir;
+				} else if (rail.getBaseDirection() == this.direction || Util.invertDirection(this.direction) == railDir){
+					this.direction = rail.getBaseDirection();
 				} else {
-					track.changeDirection();
-					this.direction = track.getBaseDirection();
+					rail.changeDirection();
+					this.direction = rail.getBaseDirection();
 				}
 			}
 
