@@ -34,7 +34,7 @@ public class World{
 						tile = new Tile(x, y);
 					} else if (type == 1){
 						tile = new Rail(this, x, y);
-						if (data.length == 2){
+						if (data.length > 1 && !data[1].equals("")){
 							((Rail)tile).setBaseDirection(Byte.parseByte(data[1]));
 						}
 					} else if (type == 2){
@@ -46,9 +46,17 @@ public class World{
 						((Rail)tile).setInput(true);
 					} else if (type == 5){
 						tile = new Road(x, y);
+						if (data.length == 2){
+							((Road)tile).setDisconnection(Byte.parseByte(data[1]));
+						}
 					} else if (type == 6){
 						tile = new CrossingGate(this, x, y, Integer.parseInt(data[1]) == 1);
 					}
+
+					if (tile instanceof Rail && data.length > 2){
+						((Rail)tile).setDisconnection(Byte.parseByte(data[2]));
+					}
+
 					this.world[x][y] = tile;
 				}
 			}

@@ -83,15 +83,15 @@ public class Carriage{
 
 			// Station
 			if (this.parent == null){
-				if (!this.stationPassed && !this.cargo){
-					Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Station && ((Station)t).getType() == this.trainType).findAny().ifPresent(t -> {
+				if (!this.stationPassed){
+					Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Station && (((Station)t).getType() == this.trainType || this.cargo)).findAny().ifPresent(t -> {
 						boolean available = ((Station)t).use(1500);
 						if (available){
 							this.moving = false;
 							STATION_SOUND.play();
-							GameScreen.score += 100;
+							GameScreen.score += this.cargo ? 50 : 100;
 							GameScreen.arrivals++;
-							this.stationPassed = true;
+							if (!this.cargo) this.stationPassed = true;
 							Util.schedule(() -> this.moving = true, 1500);
 						}
 					});
@@ -108,9 +108,9 @@ public class Carriage{
 					this.moving = false;
 				}
 			}
-
-			this.currentTile = tile;
 		}
+
+		this.currentTile = tile;
 
 		if (!isInside()){
 			if (this.currentTile != null && this.parent == null && !this.stationPassed && !this.cargo){

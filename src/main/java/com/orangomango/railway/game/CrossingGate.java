@@ -47,7 +47,7 @@ public class CrossingGate extends Rail{
 				if (!this.open){
 					setOn(cars, true);
 				}
-			}, 4000);
+			}, 5000);
 		}
 
 		// Start the animation

@@ -9,10 +9,10 @@ import java.util.List;
 import com.orangomango.railway.Util;
 
 public class Stoplight extends Tile{
-	private boolean go = true;
+	private boolean go;
 	private byte target;
 	private World world;
-	private static final Image IMAGE = new Image(Rail.class.getResourceAsStream("/images/stoplight.png"));
+	private static final Image IMAGE = new Image(Stoplight.class.getResourceAsStream("/images/stoplight.png"));
 
 	private static final AudioClip STOPLIGHT = new AudioClip(Stoplight.class.getResource("/audio/stoplight.wav").toExternalForm());
 

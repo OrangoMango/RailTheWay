@@ -6,13 +6,21 @@ import javafx.scene.image.Image;
 public class Road extends Tile{
 	private byte connection; // 0 0 0 0 -> N E S W
 	private int connectionAmount;
+	private byte disconnection;
 	private static final Image IMAGE = new Image(Rail.class.getResourceAsStream("/images/road.png"));
 
 	public Road(int x, int y){
 		super(x, y);
 	}
+	
+	public void setDisconnection(byte value){
+		this.disconnection = value;
+	}
 
 	public void addConnection(byte n){
+		if ((this.disconnection & n) != 0){
+			return;
+		}
 		this.connection |= n;
 		this.connectionAmount++;
 	}

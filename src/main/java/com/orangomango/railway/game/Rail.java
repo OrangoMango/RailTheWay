@@ -15,6 +15,7 @@ public class Rail extends Tile{
 	private byte direction;
 	private byte baseDirection;
 	private boolean isInput;
+	private byte disconnection;
 	private static final Image IMAGE = new Image(Rail.class.getResourceAsStream("/images/rail.png"));
 
 	private static final AudioClip TRACK_SOUND = new AudioClip(Rail.class.getResource("/audio/rail_change.wav").toExternalForm());
@@ -32,7 +33,14 @@ public class Rail extends Tile{
 		return this.isInput;
 	}
 
+	public void setDisconnection(byte value){
+		this.disconnection = value;
+	}
+
 	public void addConnection(byte n){
+		if ((this.disconnection & n) != 0){
+			return;
+		}
 		this.connection |= n;
 		if (n != this.baseDirection) this.direction = n;
 		this.connectionAmount++;

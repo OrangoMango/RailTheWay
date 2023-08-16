@@ -33,6 +33,7 @@ public class GameScreen{
 	private volatile boolean warningBlink;
 	private volatile boolean gameRunning = true;
 	private String worldName;
+	private boolean gameoverSkip = false;
 
 	public static int score, arrivals, misses;
 	public static int TRAIN_COOLDOWN = 5500;
@@ -69,7 +70,7 @@ public class GameScreen{
 			while (this.gameRunning){
 				try {
 					int n = Math.random() < 0.7 ? 1 : (Math.random() < 0.6 ? 2 : 3);
-					if (score < 600) n = 1;
+					if (score < 500) n = 1;
 					WARNING_SOUND.play();
 					Tile[] warningTile = Util.getRandomStart(this.world, n);
 					n = warningTile.length; // fix
@@ -117,7 +118,7 @@ public class GameScreen{
 					} else if (tile instanceof CrossingGate){
 						((CrossingGate)tile).toggle(this.cars);
 					}
-				} else {
+				} else if (this.gameoverSkip){
 					this.loop.stop();
 					HomeScreen hs = new HomeScreen(this.width, this.height, this.fps, this.scale);
 					MainApplication.stage.setScene(hs.getScene());
@@ -231,6 +232,7 @@ public class GameScreen{
 					this.playedTime = diff;
 					this.canvasImage = gc.getCanvas().snapshot(null, new WritableImage(this.width, this.height));
 					this.gameRunning = false;
+					Util.schedule(() -> this.gameoverSkip = true, 1500);
 					return;
 				}
 			}

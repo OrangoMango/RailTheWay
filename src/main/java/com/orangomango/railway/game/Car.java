@@ -77,12 +77,10 @@ public class Car{
 				}).findAny().ifPresent(t -> {
 					this.moving = false;
 				});
-
-				this.currentTile = tile;
-			} else if (tile instanceof CrossingGate){
-				this.currentTile = tile;
 			}
 		}
+
+		this.currentTile = tile;
 
 		if (cars.stream().filter(c -> {
 			if (c != this && c.direction == this.direction){
