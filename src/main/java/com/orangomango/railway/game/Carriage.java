@@ -26,6 +26,8 @@ public class Carriage{
 	private boolean stationPassed;
 	private boolean cargo;
 	private int cargoIndex;
+	private boolean missed, jolly;
+	private int multiplier = 1;
 
 	public Carriage(World world, TrainType trainType, double x, double y, byte direction, Carriage parent){
 		this.x = x;
@@ -81,18 +83,22 @@ public class Carriage{
 				}
 			}
 
-			// Station
 			if (this.parent == null){
-				if (!this.stationPassed){
-					Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Station && (((Station)t).getType() == this.trainType || this.cargo)).findAny().ifPresent(t -> {
-						boolean available = ((Station)t).use(1500);
+				// Station
+				if ((!this.stationPassed || this.jolly) && !this.cargo){
+					Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Station && (this.jolly || ((Station)t).getType() == this.trainType)).findAny().ifPresent(t -> {
+						final int useTime = 1500;
+						boolean available = ((Station)t).use(useTime);
 						if (available){
 							this.moving = false;
 							STATION_SOUND.play();
-							GameScreen.score += this.cargo ? 50 : 100;
+							GameScreen.score += 100*(this.multiplier++);
 							GameScreen.arrivals++;
-							if (!this.cargo) this.stationPassed = true;
-							Util.schedule(() -> this.moving = true, 1500);
+							this.stationPassed = true;
+							Util.schedule(() -> {
+								this.moving = true;
+								this.jolly = true;
+							}, useTime);
 						}
 					});
 				}
@@ -113,10 +119,11 @@ public class Carriage{
 		this.currentTile = tile;
 
 		if (!isInside()){
-			if (this.currentTile != null && this.parent == null && !this.stationPassed && !this.cargo){
+			if (!this.missed && this.parent == null && !this.stationPassed && !this.cargo){
 				GameScreen.score -= 75;
 				GameScreen.misses++;
 				STATION_MISSED.play();
+				this.missed = true;
 			}
 			this.currentTile = null;
 		}
@@ -130,6 +137,14 @@ public class Carriage{
 		} else if ((this.direction & 1) == 1){
 			this.x -= SPEED;
 		}
+	}
+
+	public boolean isJolly(){
+		return this.jolly;
+	}
+
+	public void setJolly(boolean value){
+		this.jolly = value;
 	}
 
 	public Tile getCurrentTile(){
@@ -150,7 +165,6 @@ public class Carriage{
 
 	public void render(GraphicsContext gc){
 		if (!isInside()) return;
-		int index = this.cargo ? -1 : this.trainType.ordinal();
 		gc.save();
 		gc.translate(this.x, this.y);
 		if ((this.direction & 8) == 8){
@@ -166,6 +180,7 @@ public class Carriage{
 		if (this.cargo){
 			gc.drawImage(CARGO_IMAGE, 1+34*this.cargoIndex, 1, 32, 32, -Tile.WIDTH/2, -Tile.HEIGHT/2, Tile.WIDTH, Tile.HEIGHT);
 		} else {
+			int index = this.jolly ? 4 : this.trainType.ordinal();
 			gc.drawImage(IMAGE, 1+34*index, 1, 32, 32, -Tile.WIDTH/2, -Tile.HEIGHT/2, Tile.WIDTH, Tile.HEIGHT);
 		}
 		gc.restore();
