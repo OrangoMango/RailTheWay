@@ -57,6 +57,7 @@ public class Carriage{
 		int worldX = (int)(this.x/Tile.WIDTH);
 		int worldY = (int)(this.y/Tile.HEIGHT);
 		Tile tile = this.world.getTileAt(worldX, worldY);
+		this.currentTile = tile;
 		if (tile instanceof Rail && Math.abs(this.x-(worldX*Tile.WIDTH+Tile.WIDTH/2)) < SPEED && Math.abs(this.y-(worldY*Tile.HEIGHT+Tile.HEIGHT/2)) < SPEED){
 			// Fix the position
 			this.x = worldX*Tile.WIDTH+Tile.WIDTH/2;
@@ -104,7 +105,7 @@ public class Carriage{
 				}
 
 				// Stoplight
-				Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Stoplight && !((Stoplight)t).canGo()).findAny().ifPresent(t -> {
+				Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Stoplight && !((Stoplight)t).canGo() && ((Stoplight)t).getTargetTile() == this.currentTile).findAny().ifPresent(t -> {
 					this.moving = false;
 				});
 			} else {
@@ -115,8 +116,6 @@ public class Carriage{
 				}
 			}
 		}
-
-		this.currentTile = tile;
 
 		if (!isInside()){
 			if (!this.missed && this.parent == null && !this.stationPassed && !this.cargo){

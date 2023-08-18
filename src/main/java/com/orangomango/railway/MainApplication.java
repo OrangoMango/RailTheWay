@@ -19,7 +19,7 @@ public class MainApplication extends Application{
 	@Override
 	public void start(Stage stage){
 		MainApplication.stage = stage;
-		stage.setTitle("RAIL-the-WAY v1.0");
+		stage.setTitle("RAIL-the-WAY v2.0");
 
 		MediaPlayer music = new MediaPlayer(BACKGROUND_MUSIC);
 		music.setCycleCount(MediaPlayer.INDEFINITE);

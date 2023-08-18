@@ -28,16 +28,7 @@ public class Stoplight extends Tile{
 
 	public void toggle(List<Train> trains){
 		this.go = !this.go;
-		Tile trg = null;
-		if ((this.target & 8) == 8){
-			trg = this.world.getTileAt(this.x, this.y-1);
-		} else if ((this.target & 4) == 4){
-			trg = this.world.getTileAt(this.x+1, this.y);
-		} else if ((this.target & 2) == 2){
-			trg = this.world.getTileAt(this.x, this.y+1);
-		} else if ((this.target & 1) == 1){
-			trg = this.world.getTileAt(this.x-1, this.y);
-		}
+		Tile trg = getTargetTile();
 		if (trg != null){
 			for (Train train : trains){
 				Carriage c = train.getTrain().get(0);
@@ -47,6 +38,20 @@ public class Stoplight extends Tile{
 			}
 		}
 		STOPLIGHT.play();
+	}
+
+	public Tile getTargetTile(){
+		if ((this.target & 8) == 8){
+			return this.world.getTileAt(this.x, this.y-1);
+		} else if ((this.target & 4) == 4){
+			return this.world.getTileAt(this.x+1, this.y);
+		} else if ((this.target & 2) == 2){
+			return this.world.getTileAt(this.x, this.y+1);
+		} else if ((this.target & 1) == 1){
+			return this.world.getTileAt(this.x-1, this.y);
+		} else {
+			return null;
+		}
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import javafx.scene.layout.StackPane;
 import javafx.animation.*;
 import javafx.util.Duration;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.KeyCode;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.image.WritableImage;
@@ -34,6 +35,7 @@ public class GameScreen{
 	private volatile boolean gameRunning = true;
 	private String worldName;
 	private boolean gameoverSkip = false;
+	private Map<KeyCode, Boolean> keys = new HashMap<>();
 
 	public static int score, arrivals, misses;
 	public static int TRAIN_COOLDOWN = 5500;
@@ -69,8 +71,8 @@ public class GameScreen{
 		Thread creator = new Thread(() -> {
 			while (this.gameRunning){
 				try {
-					int n = Math.random() < 0.7 ? 1 : (Math.random() < 0.6 ? 2 : 3);
-					if (score < 500) n = 1;
+					int n = Math.random() < 0.8 ? 1 : (Math.random() < 0.7 ? 2 : 3);
+					if (score < 1500) n = 1;
 					WARNING_SOUND.play();
 					Tile[] warningTile = Util.getRandomStart(this.world, n);
 					n = warningTile.length; // fix
@@ -125,6 +127,10 @@ public class GameScreen{
 				}
 			}
 		});
+
+		canvas.setFocusTraversable(true);
+		canvas.setOnKeyPressed(e -> this.keys.put(e.getCode(), true));
+		canvas.setOnKeyReleased(e -> this.keys.put(e.getCode(), false));
 
 		this.loop = new Timeline(new KeyFrame(Duration.millis(1000.0/this.fps), e -> update(gc)));
 		this.loop.setCycleCount(Animation.INDEFINITE);
@@ -248,6 +254,15 @@ public class GameScreen{
 				this.trains.remove(i);
 				i--;
 			}
+		}
+
+		// Quit the game
+		if (this.keys.getOrDefault(KeyCode.ESCAPE, false)){
+			this.loop.stop();
+			this.gameRunning = false;
+			HomeScreen hs = new HomeScreen(this.width, this.height, this.fps, this.scale);
+			MainApplication.stage.setScene(hs.getScene());
+			this.keys.put(KeyCode.ESCAPE, false);
 		}
 	}
 
