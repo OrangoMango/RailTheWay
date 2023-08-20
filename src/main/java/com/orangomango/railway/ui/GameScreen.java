@@ -38,8 +38,9 @@ public class GameScreen{
 	private Map<KeyCode, Boolean> keys = new HashMap<>();
 
 	public static int score, arrivals, misses;
+	public static InformationText infoText;
 	public static int TRAIN_COOLDOWN = 8200;
-	private static final Font FONT = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
+	public static final Font FONT = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
 	private static final Font FONT_45 = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 45);
 	private static final Image WARNING_IMAGE = new Image(GameScreen.class.getResourceAsStream("/images/warning.png"));
 
@@ -56,6 +57,7 @@ public class GameScreen{
 		score = 0;
 		arrivals = 0;
 		misses = 0;
+		infoText = null;
 	}
 
 	public Scene getScene(){
@@ -244,6 +246,13 @@ public class GameScreen{
 		gc.setFont(FONT);
 		gc.setTextAlign(TextAlignment.CENTER);
 		gc.fillText("Score: "+score+"\nArrivals: "+arrivals+"\nMisses: "+misses+"\nSurvived: "+formatTime((int)diff), 1150-125, 750/2-100);
+
+		if (this.infoText != null){
+			this.infoText.render(gc);
+			if (!this.infoText.exists()){
+				this.infoText = null;
+			}
+		}
 
 		gc.restore();
 

@@ -15,6 +15,7 @@ public class World{
 		Random random = new Random();
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+			reader.readLine(); // Skip the world's title
 			String[] header = reader.readLine().split(" ");
 			this.width = Integer.parseInt(header[0].split("x")[0]);
 			this.height = Integer.parseInt(header[0].split("x")[1]);

@@ -1,6 +1,7 @@
 package com.orangomango.railway.game;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.media.AudioClip;
@@ -9,6 +10,7 @@ import java.util.Random;
 
 import com.orangomango.railway.Util;
 import com.orangomango.railway.ui.GameScreen;
+import com.orangomango.railway.ui.InformationText;
 
 public class Carriage{
 	private static final double SPEED = 3;
@@ -100,8 +102,11 @@ public class Carriage{
 						if (available){
 							this.moving = false;
 							STATION_SOUND.play();
-							GameScreen.score += 100*(this.multiplier++);
+							int gainedScore = 100*this.multiplier;
+							GameScreen.score += gainedScore;
+							GameScreen.infoText = new InformationText(Color.YELLOW, "Score\n+"+gainedScore+(this.multiplier > 1 ? "\n(Combo x"+this.multiplier+")" : ""), 1150, 450);
 							GameScreen.arrivals++;
+							this.multiplier++;
 							this.stationPassed = true;
 							Util.schedule(() -> {
 								this.moving = true;
@@ -127,6 +132,7 @@ public class Carriage{
 		if (!isInside()){
 			if (!this.missed && this.parent == null && !this.stationPassed && !this.cargo){
 				GameScreen.score -= 75;
+				GameScreen.infoText = new InformationText(Color.RED, "Score\n-75", 1150, 450);
 				GameScreen.misses++;
 				STATION_MISSED.play();
 				this.missed = true;

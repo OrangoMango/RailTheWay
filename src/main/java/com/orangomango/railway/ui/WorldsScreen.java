@@ -13,6 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
 
 import java.util.*;
+import java.io.*;
 
 import com.orangomango.railway.MainApplication;
 
@@ -21,6 +22,8 @@ public class WorldsScreen{
 	private double scale;
 	private List<UiButton> buttons = new ArrayList<>();
 	private UiSlider slider;
+	private double scrollY;
+	private Map<Integer, String> titles = new HashMap<>();
 	private Image background = new Image(getClass().getResourceAsStream("/images/background.png"));
 	private static final Font FONT = Font.loadFont(HomeScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
 
@@ -55,34 +58,56 @@ public class WorldsScreen{
 		canvas.setOnMousePressed(e -> {
 			if (e.getButton() == MouseButton.PRIMARY){
 				for (UiButton ub : this.buttons){
-					ub.click(e.getX()/this.scale, e.getY()/this.scale);
+					ub.click(e.getX()/this.scale, (e.getY()-this.scrollY)/this.scale);
 				}
 			}
 		});
 
 		canvas.setOnMouseDragged(e -> {
 			if (e.getButton() == MouseButton.PRIMARY){
-				this.slider.drag(e.getX()/this.scale, e.getY()/this.scale);
+				this.slider.drag(e.getX()/this.scale, (e.getY()-this.scrollY)/this.scale);
 			}
 		});
 
 		canvas.setOnMouseMoved(e -> {
 			for (UiButton ub : this.buttons){
-				ub.hover(e.getX()/this.scale, e.getY()/this.scale);
+				ub.hover(e.getX()/this.scale, (e.getY()-this.scrollY)/this.scale);
 			}
 		});
 
-		UiButton map1 = new UiButton(gc, 310, 300, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(1, loop));
-		UiButton map2 = new UiButton(gc, 510, 300, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(2, loop));
-		UiButton map3 = new UiButton(gc, 710, 300, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(3, loop));
+		final int levels = 2;
+		canvas.setOnScroll(e -> {
+			if (e.getDeltaY() > 0){
+				if (this.scrollY > 0) return;
+				this.scrollY += 35;
+			} else if (e.getDeltaY() < 0){
+				if (this.scrollY < -(levels/5*380-750+75)) return;
+				this.scrollY -= 35;
+			} 
+		});
 
-		this.buttons.add(map1);
-		this.buttons.add(map2);
-		this.buttons.add(map3);
+		for (int i = 0; i < levels; i++){
+			final int levelNumber = i+1;
+			UiButton mapButton = new UiButton(gc, 110+(i%5)*200, 300+250*(i/5), 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> play(levelNumber, loop));
+			this.buttons.add(mapButton);
+			titles.put(levelNumber, getTitle(levelNumber));
+		}
 
 		Scene scene = new Scene(pane, this.width, this.height);
 		scene.setFill(Color.BLACK);
 		return scene;
+	}
+
+	private String getTitle(int n){
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/worlds/world"+n+".wld")));
+			String title = reader.readLine();
+			reader.close();
+			return title;
+		} catch (IOException ex){
+			ex.printStackTrace();
+			return null;
+		}
 	}
 
 	private void play(int n, Timeline loop){
@@ -95,11 +120,17 @@ public class WorldsScreen{
 		gc.clearRect(0, 0, this.width, this.height);
 
 		gc.save();
+		gc.translate(0, this.scrollY);
 		gc.scale(this.scale, this.scale);
-		gc.drawImage(this.background, 0, 0, 1150, 750);
+		gc.drawImage(this.background, 0, -this.scrollY, 1150, 750); // Background is fixed
 
-		for (UiButton ub : this.buttons){
+		gc.setFont(FONT);
+		gc.setFill(Color.BLUE);
+		gc.setTextAlign(TextAlignment.CENTER);
+		for (int i = 0; i < this.buttons.size(); i++){
+			UiButton ub = this.buttons.get(i);
 			ub.render();
+			gc.fillText(this.titles.get(i+1), ub.getX()+64, ub.getY()+165);
 		}
 
 		this.slider.render();
@@ -107,7 +138,7 @@ public class WorldsScreen{
 		gc.setFill(Color.BLACK);
 		gc.setFont(FONT);
 		gc.setTextAlign(TextAlignment.CENTER);
-		gc.fillText("Press ESCAPE to go back", 1150/2, 750-50);
+		gc.fillText("Press ESCAPE to go back", 1150/2, 50);
 		gc.restore();
 	}
 }
