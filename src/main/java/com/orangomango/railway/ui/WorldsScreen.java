@@ -37,8 +37,8 @@ public class WorldsScreen{
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		pane.getChildren().add(canvas);
 
-		this.slider = new UiSlider(gc, 100, 75, 950, 96, new Image(getClass().getResourceAsStream("/images/diff_easy.png")), new Image(getClass().getResourceAsStream("/images/diff_difficult.png")), v -> GameScreen.TRAIN_COOLDOWN = (int)(11000*(1-v)));
-		GameScreen.TRAIN_COOLDOWN = 5500;
+		this.slider = new UiSlider(gc, 100, 75, 950, 96, new Image(getClass().getResourceAsStream("/images/diff_easy.png")), new Image(getClass().getResourceAsStream("/images/diff_difficult.png")), v -> GameScreen.TRAIN_COOLDOWN = (int)(16400*(1-v)));
+		GameScreen.TRAIN_COOLDOWN = 8200;
 
 		Timeline loop = new Timeline(new KeyFrame(Duration.millis(1000.0/this.fps), e -> update(gc)));
 		loop.setCycleCount(Animation.INDEFINITE);

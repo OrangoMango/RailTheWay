@@ -5,6 +5,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.media.AudioClip;
 
+import java.util.Random;
+
 import com.orangomango.railway.Util;
 import com.orangomango.railway.ui.GameScreen;
 
@@ -28,6 +30,7 @@ public class Carriage{
 	private int cargoIndex;
 	private boolean missed, jolly;
 	private int multiplier = 1;
+	private volatile int jollyColor;
 
 	public Carriage(World world, TrainType trainType, double x, double y, byte direction, Carriage parent){
 		this.x = x;
@@ -49,6 +52,10 @@ public class Carriage{
 
 	public void setCargoIndex(int i){
 		this.cargoIndex = i;
+	}
+
+	public void setJollyColor(int v){
+		this.jollyColor = v;
 	}
 
 	public void update(){
@@ -179,7 +186,7 @@ public class Carriage{
 		if (this.cargo){
 			gc.drawImage(CARGO_IMAGE, 1+34*this.cargoIndex, 1, 32, 32, -Tile.WIDTH/2, -Tile.HEIGHT/2, Tile.WIDTH, Tile.HEIGHT);
 		} else {
-			int index = this.jolly ? 4 : this.trainType.ordinal();
+			int index = this.jolly ? this.jollyColor : this.trainType.ordinal();
 			gc.drawImage(IMAGE, 1+34*index, 1, 32, 32, -Tile.WIDTH/2, -Tile.HEIGHT/2, Tile.WIDTH, Tile.HEIGHT);
 		}
 		gc.restore();

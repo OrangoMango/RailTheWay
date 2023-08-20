@@ -38,7 +38,7 @@ public class GameScreen{
 	private Map<KeyCode, Boolean> keys = new HashMap<>();
 
 	public static int score, arrivals, misses;
-	public static int TRAIN_COOLDOWN = 5500;
+	public static int TRAIN_COOLDOWN = 8200;
 	private static final Font FONT = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
 	private static final Font FONT_45 = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 45);
 	private static final Image WARNING_IMAGE = new Image(GameScreen.class.getResourceAsStream("/images/warning.png"));
@@ -71,7 +71,7 @@ public class GameScreen{
 		Thread creator = new Thread(() -> {
 			while (this.gameRunning){
 				try {
-					int n = Math.random() < 0.8 ? 1 : (Math.random() < 0.7 ? 2 : 3);
+					int n = Math.random() < 0.6 ? 1 : (Math.random() < 0.8 ? 2 : 3);
 					if (score < 1500) n = 1;
 					WARNING_SOUND.play();
 					Tile[] warningTile = Util.getRandomStart(this.world, n);
@@ -81,11 +81,12 @@ public class GameScreen{
 					}
 					Thread.sleep(1000);
 					WARNING_SOUND.play();
-					Thread.sleep(TRAIN_COOLDOWN);
 					for (int i = 0; i < n; i++){
 						createRandomTrain(warningTile[i]);
 						this.warningTiles.remove(warningTile[i]);
 					}
+					int cooldown = TRAIN_COOLDOWN-50*(int)Math.round(score/225.0);
+					Thread.sleep(Math.max(cooldown, 1000));
 				} catch (InterruptedException ex){
 					ex.printStackTrace();
 				}
@@ -106,6 +107,28 @@ public class GameScreen{
 		});
 		warning.setDaemon(true);
 		warning.start();
+
+		Thread jollyColors = new Thread(() -> {
+			Random random = new Random();
+			while (this.gameRunning){
+				try {
+					// Set jolly color
+					for (Train t : this.trains){
+						if (t.getTrain().get(0).isJolly()){
+							int color = random.nextInt(TrainType.values().length);
+							for (Carriage c : t.getTrain()){
+								c.setJollyColor(color);
+							}
+						}
+					}
+					Thread.sleep(300);
+				} catch (InterruptedException ex){
+					ex.printStackTrace();
+				}
+			}
+		});
+		jollyColors.setDaemon(true);
+		jollyColors.start();
 
 		canvas.setOnMousePressed(e -> {
 			final double ex = e.getX()/this.scale-this.translateX;
