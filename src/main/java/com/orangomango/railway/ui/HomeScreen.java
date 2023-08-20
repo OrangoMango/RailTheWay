@@ -43,7 +43,7 @@ public class HomeScreen{
 
 		UiButton playButton = new UiButton(gc, 300, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> {
 			Random random = new Random(); // "world"+(random.nextInt(3)+1)+".wld"
-			GameScreen gs = new GameScreen("test2.wld", this.width, this.height, this.fps, this.scale);
+			GameScreen gs = new GameScreen("world3.wld", this.width, this.height, this.fps, this.scale);
 			loop.stop();
 			MainApplication.stage.setScene(gs.getScene());
 		});

@@ -75,7 +75,7 @@ public class WorldsScreen{
 			}
 		});
 
-		final int levels = 2;
+		final int levels = 3;
 		canvas.setOnScroll(e -> {
 			if (e.getDeltaY() > 0){
 				if (this.scrollY > 0) return;
