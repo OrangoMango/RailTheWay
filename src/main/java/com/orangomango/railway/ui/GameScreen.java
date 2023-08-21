@@ -83,12 +83,12 @@ public class GameScreen{
 					}
 					Thread.sleep(1000);
 					WARNING_SOUND.play();
+					int cooldown = TRAIN_COOLDOWN-50*(int)Math.round(score/225.0);
+					Thread.sleep(Math.max(cooldown, 1000));
 					for (int i = 0; i < n; i++){
 						createRandomTrain(warningTile[i]);
 						this.warningTiles.remove(warningTile[i]);
 					}
-					int cooldown = TRAIN_COOLDOWN-50*(int)Math.round(score/225.0);
-					Thread.sleep(Math.max(cooldown, 1000));
 				} catch (InterruptedException ex){
 					ex.printStackTrace();
 				}
