@@ -1,12 +1,16 @@
 package com.orangomango.railway.game;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.media.AudioClip;
 
+import java.util.Random;
+
 import com.orangomango.railway.Util;
 import com.orangomango.railway.ui.GameScreen;
+import com.orangomango.railway.ui.InformationText;
 
 import dev.webfx.platform.resource.Resource;
 
@@ -28,6 +32,9 @@ public class Carriage{
 	private boolean stationPassed;
 	private boolean cargo;
 	private int cargoIndex;
+	private boolean missed, jolly;
+	private int multiplier = 1;
+	private volatile int jollyColor;
 
 	public Carriage(World world, TrainType trainType, double x, double y, byte direction, Carriage parent){
 		this.x = x;
@@ -51,20 +58,25 @@ public class Carriage{
 		this.cargoIndex = i;
 	}
 
+	public void setJollyColor(int v){
+		this.jollyColor = v;
+	}
+
 	public void update(){
 		if (!this.moving) return;
 
 		int worldX = (int)(this.x/Tile.WIDTH);
 		int worldY = (int)(this.y/Tile.HEIGHT);
 		Tile tile = this.world.getTileAt(worldX, worldY);
-		if (tile instanceof Track && Math.abs(this.x-(worldX*Tile.WIDTH+Tile.WIDTH/2)) < SPEED && Math.abs(this.y-(worldY*Tile.HEIGHT+Tile.HEIGHT/2)) < SPEED){
+		this.currentTile = tile;
+		if (tile instanceof Rail && Math.abs(this.x-(worldX*Tile.WIDTH+Tile.WIDTH/2)) < SPEED && Math.abs(this.y-(worldY*Tile.HEIGHT+Tile.HEIGHT/2)) < SPEED){
 			// Fix the position
 			this.x = worldX*Tile.WIDTH+Tile.WIDTH/2;
 			this.y = worldY*Tile.HEIGHT+Tile.HEIGHT/2;
 			
-			Track track = (Track)tile;
-			int connAmount = track.getConnectionAmount();
-			byte connections = track.getConnections();
+			Rail rail = (Rail)tile;
+			int connAmount = rail.getConnectionAmount();
+			byte connections = rail.getConnections();
 			if ((connections & Util.invertDirection(this.direction)) == Util.invertDirection(this.direction)){
 				connAmount--;
 			}
@@ -72,35 +84,42 @@ public class Carriage{
 				byte finalDir = (byte)(connections & Util.invertBits(Util.invertDirection(this.direction))); // 1001 0100 -> 1001 0001 -> 1001 1110 -> 1000
 				this.direction = finalDir;
 			} else if (connAmount == 2){
-				byte trackDir = track.getDirection(); // 1010 1000 -> 1000
-				if (track.getBaseDirection() == Util.invertDirection(this.direction)){
-					this.direction = trackDir;
-				} else if (track.getBaseDirection() == this.direction || Util.invertDirection(this.direction) == trackDir){
-					this.direction = track.getBaseDirection();
+				byte railDir = rail.getDirection(); // 1010 1000 -> 1000
+				if (rail.getBaseDirection() == Util.invertDirection(this.direction)){
+					this.direction = railDir;
+				} else if (rail.getBaseDirection() == this.direction || Util.invertDirection(this.direction) == railDir){
+					this.direction = rail.getBaseDirection();
 				} else {
-					track.changeDirection();
-					this.direction = track.getBaseDirection();
+					rail.changeDirection();
+					this.direction = rail.getBaseDirection();
 				}
 			}
 
-			// Station
 			if (this.parent == null){
-				if (!this.stationPassed && !this.cargo){
-					Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Station && ((Station)t).getType() == this.trainType).findAny().ifPresent(t -> {
-						boolean available = ((Station)t).use(1500);
+				// Station
+				if ((!this.stationPassed || this.jolly) && !this.cargo){
+					Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Station && (this.jolly || ((Station)t).getType() == this.trainType)).findAny().ifPresent(t -> {
+						final int useTime = 1500;
+						boolean available = ((Station)t).use(useTime);
 						if (available){
 							this.moving = false;
 							STATION_SOUND.play();
-							GameScreen.score += 100;
+							int gainedScore = 100*this.multiplier;
+							GameScreen.score += gainedScore;
+							GameScreen.infoText = new InformationText(Color.YELLOW, "Score\n+"+gainedScore+(this.multiplier > 1 ? "\n(Combo x"+this.multiplier+")" : ""), 1150, 450);
 							GameScreen.arrivals++;
+							this.multiplier++;
 							this.stationPassed = true;
-							Util.schedule(() -> this.moving = true, 1500);
+							Util.schedule(() -> {
+								this.moving = true;
+								this.jolly = true;
+							}, useTime);
 						}
 					});
 				}
 
 				// Stoplight
-				Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Stoplight && !((Stoplight)t).canGo()).findAny().ifPresent(t -> {
+				Util.getNeighbors(this.world, tile).stream().filter(t -> t instanceof Stoplight && !((Stoplight)t).canGo() && ((Stoplight)t).getTargetTile() == this.currentTile).findAny().ifPresent(t -> {
 					this.moving = false;
 				});
 			} else {
@@ -110,15 +129,15 @@ public class Carriage{
 					this.moving = false;
 				}
 			}
-
-			this.currentTile = tile;
 		}
 
 		if (!isInside()){
-			if (this.currentTile != null && this.parent == null && !this.stationPassed){
+			if (!this.missed && this.parent == null && !this.stationPassed && !this.cargo){
 				GameScreen.score -= 75;
+				GameScreen.infoText = new InformationText(Color.RED, "Score\n-75", 1150, 450);
 				GameScreen.misses++;
 				STATION_MISSED.play();
+				this.missed = true;
 			}
 			this.currentTile = null;
 		}
@@ -132,6 +151,14 @@ public class Carriage{
 		} else if ((this.direction & 1) == 1){
 			this.x -= SPEED;
 		}
+	}
+
+	public boolean isJolly(){
+		return this.jolly;
+	}
+
+	public void setJolly(boolean value){
+		this.jolly = value;
 	}
 
 	public Tile getCurrentTile(){
@@ -150,17 +177,8 @@ public class Carriage{
 		return this.x >= 0 && this.y >= 0 && this.x <= this.world.getWidth()*Tile.WIDTH && this.y <= this.world.getHeight()*Tile.HEIGHT;
 	}
 
-	public double getX(){
-		return this.x;
-	}
-
-	public double getY(){
-		return this.y;
-	}
-
 	public void render(GraphicsContext gc){
 		if (!isInside()) return;
-		int index = this.cargo ? -1 : this.trainType.ordinal();
 		gc.save();
 		gc.translate(this.x, this.y);
 		if ((this.direction & 8) == 8){
@@ -176,6 +194,7 @@ public class Carriage{
 		if (this.cargo){
 			gc.drawImage(CARGO_IMAGE, 1+34*this.cargoIndex, 1, 32, 32, -Tile.WIDTH/2, -Tile.HEIGHT/2, Tile.WIDTH, Tile.HEIGHT);
 		} else {
+			int index = this.jolly ? this.jollyColor : this.trainType.ordinal();
 			gc.drawImage(IMAGE, 1+34*index, 1, 32, 32, -Tile.WIDTH/2, -Tile.HEIGHT/2, Tile.WIDTH, Tile.HEIGHT);
 		}
 		gc.restore();

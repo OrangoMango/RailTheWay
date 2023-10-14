@@ -2,6 +2,7 @@ package com.orangomango.railway;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -21,7 +22,7 @@ public class MainApplication extends Application{
 	@Override
 	public void start(Stage stage){
 		MainApplication.stage = stage;
-		stage.setTitle("RAIL-the-WAY v1.0");
+		stage.setTitle("RAIL-the-WAY v2.0");
 
 		MediaPlayer music = new MediaPlayer(BACKGROUND_MUSIC);
 		music.setCycleCount(MediaPlayer.INDEFINITE);
@@ -31,6 +32,7 @@ public class MainApplication extends Application{
 
 		stage.setScene(gs.getScene());
 		stage.setResizable(false);
+		stage.getIcons().add(new Image(Resource.toUrl("/images/icon.png", MainApplication.class)));
 		stage.show();
 	}
 	

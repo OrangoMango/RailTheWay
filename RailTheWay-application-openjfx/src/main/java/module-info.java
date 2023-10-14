@@ -12,7 +12,7 @@ module RailTheWay.application.openjfx {
     requires webfx.platform.scheduler.java;
     requires webfx.platform.shutdown.java;
 
-    // Resources packages
+    // Meta Resource package
     opens dev.webfx.platform.meta.exe;
 
 }

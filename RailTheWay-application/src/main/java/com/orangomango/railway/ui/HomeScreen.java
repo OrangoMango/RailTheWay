@@ -99,7 +99,7 @@ public class HomeScreen{
 		gc.drawImage(this.rails, 300, 525);
 
 		gc.setFill(Color.BLACK);
-		gc.fillText("RAIL-the-WAY by OrangoMango, v1.0, Indie Dev Game Jam 2023 (Made in 72h). Music from freesound.org", 1150/2, 750-50);
+		gc.fillText("RAIL-the-WAY by OrangoMango, v2.0, Indie Dev Game Jam 2023 (Post-jam). Music from freesound.org", 1150/2, 750-50);
 
 		gc.restore();
 	}

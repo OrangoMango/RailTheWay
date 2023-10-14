@@ -35,7 +35,7 @@ public class Train{
 
 	public void update(){
 		if (this.train.get(0).isMoving() && this.exists){
-			boolean allOutside = true;;
+			boolean allOutside = true;
 			for (Carriage c : this.train){
 				c.update();
 				if (c.isInside()){
@@ -45,6 +45,10 @@ public class Train{
 			if (allOutside){
 				this.exists = false;
 			}
+		}
+
+		for (int i = 1; i < this.train.size(); i++){
+			this.train.get(i).setJolly(this.train.get(0).isJolly());
 		}
 	}
 

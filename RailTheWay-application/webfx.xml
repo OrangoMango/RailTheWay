@@ -13,6 +13,7 @@
         <resource>worlds/world1.wld</resource>
         <resource>worlds/world2.wld</resource>
         <resource>worlds/world3.wld</resource>
+        <resource>worlds/world4.wld</resource>
     </embed-resources>
 
     <dependencies>
