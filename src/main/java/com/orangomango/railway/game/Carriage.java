@@ -110,7 +110,7 @@ public class Carriage{
 							this.stationPassed = true;
 							Util.schedule(() -> {
 								this.moving = true;
-								this.jolly = true;
+								this.jolly = this.world.isJollyAvailable();
 							}, useTime);
 						}
 					});

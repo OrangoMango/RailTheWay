@@ -76,7 +76,7 @@ public class WorldsScreen{
 		});
 
 		final int levels = 9;
-		canvas.setOnScroll(e -> {
+		/*canvas.setOnScroll(e -> {
 			if (e.getDeltaY() > 0){
 				if (this.scrollY > 0) return;
 				this.scrollY += 35;
@@ -84,7 +84,7 @@ public class WorldsScreen{
 				if (this.scrollY < -(levels/5*380-750+75)) return;
 				this.scrollY -= 35;
 			} 
-		});
+		});*/ // TODO next version
 
 		for (int i = 0; i < levels; i++){
 			final int levelNumber = i+1;

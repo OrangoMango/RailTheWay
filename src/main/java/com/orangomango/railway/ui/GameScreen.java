@@ -245,7 +245,7 @@ public class GameScreen{
 		gc.setFill(Color.WHITE);
 		gc.setFont(FONT);
 		gc.setTextAlign(TextAlignment.CENTER);
-		gc.fillText("Score: "+score+"\nArrivals: "+arrivals+"\nMisses: "+misses+"\nSurvived: "+formatTime((int)diff), 1150-125, 750/2-100);
+		gc.fillText("JOLLY: "+this.world.isJollyAvailable()+"\n\nScore: "+score+"\nArrivals: "+arrivals+"\nMisses: "+misses+"\nSurvived: "+formatTime((int)diff), 1150-125, 750/2-100);
 
 		if (this.infoText != null){
 			this.infoText.render(gc);
