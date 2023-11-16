@@ -11,5 +11,4 @@ Survive as much time as possible, for every train that arrives to the correct st
 
 **Made in 72h for the Indie Dev Game Jam 1, without an engine. Made in Java, using the JavaFX framework.**
 
-![6qyYJ3](https://github.com/OrangoMango/RailTheWay/assets/61402409/696b6fa8-1ae1-4cc6-a1f8-1c529e444468)
-
+![Screenshot from 2023-11-16 20-47-24](https://github.com/OrangoMango/RailTheWay/assets/61402409/6875a350-cc0e-4b09-8f33-265b8d5f1168)
