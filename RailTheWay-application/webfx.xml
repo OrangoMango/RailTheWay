@@ -14,6 +14,11 @@
         <resource>worlds/world2.wld</resource>
         <resource>worlds/world3.wld</resource>
         <resource>worlds/world4.wld</resource>
+    	<resource>worlds/world5.wld</resource>
+    	<resource>worlds/world6.wld</resource>
+    	<resource>worlds/world7.wld</resource>
+    	<resource>worlds/world8.wld</resource>
+    	<resource>worlds/world9.wld</resource>
     </embed-resources>
 
     <dependencies>

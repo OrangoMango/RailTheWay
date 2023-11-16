@@ -11,6 +11,7 @@ public class World{
 	private int width, height;
 	private Tile[][] world;
 	private List<TrainType> randomTrains = new ArrayList<>();
+	private boolean jollyAvailable;
 
 	public World(String name, List<Car> cars){
 		Random random = new Random();
@@ -25,6 +26,7 @@ public class World{
 		for (String rt : header[2].split(";")){
 			randomTrains.add(TrainType.values()[Integer.parseInt(rt)]);
 		}
+		this.jollyAvailable = Boolean.parseBoolean(header[3]);
 		this.world = new Tile[this.width][this.height];
 		for (int y = 0; y < this.height; y++){
 			String line = worldData[lineCounter++];
@@ -85,6 +87,10 @@ public class World{
 
 	public List<TrainType> getRandomTrains(){
 		return this.randomTrains;
+	}
+
+	public boolean isJollyAvailable(){
+		return this.jollyAvailable;
 	}
 
 	private void updateConnections(){

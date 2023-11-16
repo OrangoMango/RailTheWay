@@ -24,6 +24,21 @@ public interface EmbedResourcesBundle extends ClientBundle {
     @Source("worlds/world4.wld")
     TextResource r5();
 
+    @Source("worlds/world5.wld")
+    TextResource r6();
+
+    @Source("worlds/world6.wld")
+    TextResource r7();
+
+    @Source("worlds/world7.wld")
+    TextResource r8();
+
+    @Source("worlds/world8.wld")
+    TextResource r9();
+
+    @Source("worlds/world9.wld")
+    TextResource r10();
+
 
 
     final class ProvidedGwtResourceBundle extends GwtResourceBundleBase {
@@ -33,6 +48,11 @@ public interface EmbedResourcesBundle extends ClientBundle {
             registerResource("worlds/world2.wld", R.r3());
             registerResource("worlds/world3.wld", R.r4());
             registerResource("worlds/world4.wld", R.r5());
+            registerResource("worlds/world5.wld", R.r6());
+            registerResource("worlds/world6.wld", R.r7());
+            registerResource("worlds/world7.wld", R.r8());
+            registerResource("worlds/world8.wld", R.r9());
+            registerResource("worlds/world9.wld", R.r10());
 
         }
     }
