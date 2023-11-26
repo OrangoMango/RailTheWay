@@ -1,7 +1,6 @@
 # RailTheWay
-Indie Dev Game Jam 2023
-
-Guide the trains to their station. Each train has a color that represents its destination. Sometimes there are some cargo trains that disturb you, try to let them go away. There are 3 different maps, once 2 trains collide, you lose.
+Guide the trains to their station. Each train has a color that represents its destination. Sometimes there are some cargo trains that disturb you, try to let them go away and be sure to avoid the cars on your way!
+There are 9 different maps, once there is a collision, you lose.
 # Download
 Available for Browser, Windows, Linux and MacOS at https://orangomango.itch.io/railtheway
 # Controls
