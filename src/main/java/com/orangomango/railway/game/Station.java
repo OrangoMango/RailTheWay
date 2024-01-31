@@ -3,12 +3,14 @@ package com.orangomango.railway.game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+import com.orangomango.railway.AssetLoader;
+
 public class Station extends Tile{
 	private TrainType trainType;
 	private boolean using;
 	private int index;
-	private static final Image IMAGE = new Image(Station.class.getResourceAsStream("/images/station.png"));
-	private static final Image TIMER_IMAGE = new Image(Station.class.getResourceAsStream("/images/station_timer.png"));
+	private static final Image IMAGE = AssetLoader.getInstance().getImage("station.png");
+	private static final Image TIMER_IMAGE = AssetLoader.getInstance().getImage("station_timer.png");
 
 	public Station(int x, int y, TrainType type){
 		super(x, y);

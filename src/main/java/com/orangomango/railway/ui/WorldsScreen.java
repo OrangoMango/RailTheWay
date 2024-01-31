@@ -16,31 +16,29 @@ import java.util.*;
 import java.io.*;
 
 import com.orangomango.railway.MainApplication;
+import com.orangomango.railway.Util;
+import com.orangomango.railway.AssetLoader;
 
 public class WorldsScreen{
-	private int width, height, fps;
-	private double scale;
+	private int fps;
 	private List<UiButton> buttons = new ArrayList<>();
 	private UiSlider slider;
 	private double scrollY;
 	private Map<Integer, String> titles = new HashMap<>();
-	private Image background = new Image(getClass().getResourceAsStream("/images/background.png"));
+	private Image background = AssetLoader.getInstance().getImage("background.png");
 	private static final Font FONT = Font.loadFont(HomeScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
 
-	public WorldsScreen(int w, int h, int fps, double scale){
-		this.width = w;
-		this.height = h;
+	public WorldsScreen(int fps){
 		this.fps = fps;
-		this.scale = scale;
 	}
 
 	public Scene getScene(){
 		StackPane pane = new StackPane();
-		Canvas canvas = new Canvas(this.width, this.height);
+		Canvas canvas = new Canvas(Util.GAME_WIDTH, Util.GAME_HEIGHT);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		pane.getChildren().add(canvas);
 
-		this.slider = new UiSlider(gc, 100, 75, 950, 96, new Image(getClass().getResourceAsStream("/images/diff_easy.png")), new Image(getClass().getResourceAsStream("/images/diff_difficult.png")), v -> GameScreen.TRAIN_COOLDOWN = (int)(16400*(1-v)));
+		this.slider = new UiSlider(gc, 100, 75, 950, 96, AssetLoader.getInstance().getImage("diff_easy.png"), AssetLoader.getInstance().getImage("diff_difficult.png"), v -> GameScreen.TRAIN_COOLDOWN = (int)(16400*(1-v)));
 		GameScreen.TRAIN_COOLDOWN = 8200;
 
 		Timeline loop = new Timeline(new KeyFrame(Duration.millis(1000.0/this.fps), e -> update(gc)));
@@ -50,7 +48,7 @@ public class WorldsScreen{
 		canvas.setFocusTraversable(true);
 		canvas.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.ESCAPE){
-				HomeScreen hs = new HomeScreen(this.width, this.height, this.fps, this.scale);
+				HomeScreen hs = new HomeScreen(this.fps);
 				MainApplication.stage.setScene(hs.getScene());
 			}
 		});
@@ -58,20 +56,20 @@ public class WorldsScreen{
 		canvas.setOnMousePressed(e -> {
 			if (e.getButton() == MouseButton.PRIMARY){
 				for (UiButton ub : this.buttons){
-					ub.click(e.getX()/this.scale, (e.getY()-this.scrollY)/this.scale);
+					ub.click(e.getX()/Util.SCALE, (e.getY()-this.scrollY)/Util.SCALE);
 				}
 			}
 		});
 
 		canvas.setOnMouseDragged(e -> {
 			if (e.getButton() == MouseButton.PRIMARY){
-				this.slider.drag(e.getX()/this.scale, (e.getY()-this.scrollY)/this.scale);
+				this.slider.drag(e.getX()/Util.SCALE, (e.getY()-this.scrollY)/Util.SCALE);
 			}
 		});
 
 		canvas.setOnMouseMoved(e -> {
 			for (UiButton ub : this.buttons){
-				ub.hover(e.getX()/this.scale, (e.getY()-this.scrollY)/this.scale);
+				ub.hover(e.getX()/Util.SCALE, (e.getY()-this.scrollY)/Util.SCALE);
 			}
 		});
 
@@ -93,7 +91,7 @@ public class WorldsScreen{
 			titles.put(levelNumber, getTitle(levelNumber));
 		}
 
-		Scene scene = new Scene(pane, this.width, this.height);
+		Scene scene = new Scene(pane, Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
 		scene.setFill(Color.BLACK);
 		return scene;
 	}
@@ -111,17 +109,17 @@ public class WorldsScreen{
 	}
 
 	private void play(int n, Timeline loop){
-		GameScreen gs = new GameScreen("world"+n+".wld", this.width, this.height, this.fps, this.scale);
+		GameScreen gs = new GameScreen("world"+n+".wld", this.fps);
 		loop.stop();
 		MainApplication.stage.setScene(gs.getScene());
 	}
 
 	private void update(GraphicsContext gc){
-		gc.clearRect(0, 0, this.width, this.height);
+		gc.clearRect(0, 0, Util.GAME_WIDTH, Util.GAME_HEIGHT);
 
 		gc.save();
 		gc.translate(0, this.scrollY);
-		gc.scale(this.scale, this.scale);
+		gc.scale(Util.SCALE, Util.SCALE);
 		gc.drawImage(this.background, 0, -this.scrollY, 1150, 750); // Background is fixed
 
 		gc.setFont(FONT);

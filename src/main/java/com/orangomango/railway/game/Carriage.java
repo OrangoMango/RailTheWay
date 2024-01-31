@@ -9,16 +9,16 @@ import javafx.scene.media.AudioClip;
 import java.util.Random;
 
 import com.orangomango.railway.Util;
+import com.orangomango.railway.AssetLoader;
 import com.orangomango.railway.ui.GameScreen;
 import com.orangomango.railway.ui.InformationText;
 
 public class Carriage{
 	private static final double SPEED = 3;
-	private static final Image IMAGE = new Image(Carriage.class.getResourceAsStream("/images/carriage.png"));
-	private static final Image CARGO_IMAGE = new Image(Carriage.class.getResourceAsStream("/images/cargo.png"));
-
-	private static final AudioClip STATION_SOUND = new AudioClip(Carriage.class.getResource("/audio/station.wav").toExternalForm());
-	private static final AudioClip STATION_MISSED = new AudioClip(Carriage.class.getResource("/audio/station_missed.wav").toExternalForm());
+	private static final Image IMAGE = AssetLoader.getInstance().getImage("carriage.png");
+	private static final Image CARGO_IMAGE = AssetLoader.getInstance().getImage("cargo.png");
+	private static final AudioClip STATION_SOUND = AssetLoader.getInstance().getAudio("station.wav");
+	private static final AudioClip STATION_MISSED = AssetLoader.getInstance().getAudio("station_missed.wav");
 
 	private double x, y;
 	private World world;

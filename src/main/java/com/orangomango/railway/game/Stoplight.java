@@ -7,14 +7,15 @@ import javafx.scene.media.AudioClip;
 import java.util.List;
 
 import com.orangomango.railway.Util;
+import com.orangomango.railway.AssetLoader;
 
 public class Stoplight extends Tile{
 	private boolean go;
 	private byte target;
 	private World world;
-	private static final Image IMAGE = new Image(Stoplight.class.getResourceAsStream("/images/stoplight.png"));
 
-	private static final AudioClip STOPLIGHT = new AudioClip(Stoplight.class.getResource("/audio/stoplight.wav").toExternalForm());
+	private static final Image IMAGE = AssetLoader.getInstance().getImage("stoplight.png");
+	private static final AudioClip STOPLIGHT_SOUND = AssetLoader.getInstance().getAudio("stoplight.wav");
 
 	public Stoplight(World world, int x, int y, byte target){
 		super(x, y);
@@ -37,7 +38,7 @@ public class Stoplight extends Tile{
 				}
 			}
 		}
-		STOPLIGHT.play();
+		STOPLIGHT_SOUND.play();
 	}
 
 	public Tile getTargetTile(){

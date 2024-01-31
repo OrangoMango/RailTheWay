@@ -5,6 +5,12 @@ import java.util.*;
 import com.orangomango.railway.game.*;
 
 public class Util{
+	public static final double WINDOW_WIDTH = 1150;
+	public static final double WINDOW_HEIGHT = 750;
+	public static final double SCALE = WINDOW_HEIGHT/750;
+	public static final double GAME_WIDTH = 1150*Util.SCALE;
+	public static final double GAME_HEIGHT = 750*Util.SCALE;
+
 	public static byte invertDirection(byte dir){
 		if ((dir & 8) == 8){
 			return (byte)2;

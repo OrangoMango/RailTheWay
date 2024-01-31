@@ -7,6 +7,7 @@ import javafx.scene.media.AudioClip;
 import java.util.*;
 
 import com.orangomango.railway.Util;
+import com.orangomango.railway.AssetLoader;
 
 public class Rail extends Tile{
 	protected World world;
@@ -16,9 +17,9 @@ public class Rail extends Tile{
 	private byte baseDirection;
 	private boolean isInput;
 	private byte disconnection;
-	private static final Image IMAGE = new Image(Rail.class.getResourceAsStream("/images/rail.png"));
-
-	private static final AudioClip TRACK_SOUND = new AudioClip(Rail.class.getResource("/audio/rail_change.wav").toExternalForm());
+	
+	private static final Image IMAGE = AssetLoader.getInstance().getImage("rail.png");
+	private static final AudioClip TRACK_SOUND = AssetLoader.getInstance().getAudio("rail_change.wav");
 
 	public Rail(World world, int x, int y){
 		super(x, y);

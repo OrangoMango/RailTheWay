@@ -3,11 +3,13 @@ package com.orangomango.railway.game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+import com.orangomango.railway.AssetLoader;
+
 public class Road extends Tile{
 	private byte connection; // 0 0 0 0 -> N E S W
 	private int connectionAmount;
 	private byte disconnection;
-	private static final Image IMAGE = new Image(Rail.class.getResourceAsStream("/images/road.png"));
+	private static final Image IMAGE = AssetLoader.getInstance().getImage("road.png");
 
 	public Road(int x, int y){
 		super(x, y);

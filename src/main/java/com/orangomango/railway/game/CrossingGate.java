@@ -8,13 +8,14 @@ import javafx.util.Duration;
 import java.util.List;
 
 import com.orangomango.railway.Util;
+import com.orangomango.railway.AssetLoader;
 
 public class CrossingGate extends Rail{
 	private boolean vertical;
 	private int imageIndex = 8;
 	private volatile boolean open = true;
 	private boolean animating;
-	private static final Image IMAGE = new Image(Rail.class.getResourceAsStream("/images/crossingGate.png"));
+	private static final Image IMAGE = AssetLoader.getInstance().getImage("crossingGate.png");
 
 	public CrossingGate(World world, int x, int y, boolean vertical){
 		super(world, x, y);

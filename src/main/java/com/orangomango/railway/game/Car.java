@@ -7,10 +7,11 @@ import javafx.geometry.Point2D;
 import java.util.*;
 
 import com.orangomango.railway.Util;
+import com.orangomango.railway.AssetLoader;
 
 public class Car{
 	private static final double SPEED = 1;
-	private static final Image IMAGE = new Image(Car.class.getResourceAsStream("/images/car.png"));
+	private static final Image IMAGE = AssetLoader.getInstance().getImage("car.png");
 
 	private double x, y;
 	private World world;

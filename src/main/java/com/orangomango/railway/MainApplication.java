@@ -9,13 +9,11 @@ import javafx.scene.media.MediaPlayer;
 import com.orangomango.railway.ui.HomeScreen;
 
 public class MainApplication extends Application{
-	private static final int WIDTH = 1150;
-	private static final int HEIGHT = 750;
-	private static final double SCALE = 1;
 	private static final int FPS = 40;
+	private static final Media BACKGROUND_MUSIC = AssetLoader.getInstance().getMedia("background.mp3");
+
 	public static Stage stage;
-	private static final Media BACKGROUND_MUSIC = new Media(MainApplication.class.getResource("/audio/background.mp3").toExternalForm());
-	
+
 	@Override
 	public void start(Stage stage){
 		MainApplication.stage = stage;
@@ -25,11 +23,11 @@ public class MainApplication extends Application{
 		music.setCycleCount(MediaPlayer.INDEFINITE);
 		music.play();
 		
-		HomeScreen gs = new HomeScreen(WIDTH, HEIGHT, FPS, SCALE);
+		HomeScreen gs = new HomeScreen(FPS);
 
 		stage.setScene(gs.getScene());
 		stage.setResizable(false);
-		stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icon.png")));
+		stage.getIcons().add(AssetLoader.getInstance().getImage("icon.png"));
 		stage.show();
 	}
 	

@@ -14,26 +14,24 @@ import javafx.scene.paint.Color;
 import java.util.*;
 
 import com.orangomango.railway.MainApplication;
+import com.orangomango.railway.Util;
+import com.orangomango.railway.AssetLoader;
 
 public class HomeScreen{
-	private int width, height, fps;
-	private double scale;
+	private int fps;
 	private List<UiButton> buttons = new ArrayList<>();
-	private Image background = new Image(getClass().getResourceAsStream("/images/background.png"));
-	private Image rails = new Image(getClass().getResourceAsStream("/images/rails.png"));
-	private Image title = new Image(getClass().getResourceAsStream("/images/title.png"));
+	private Image background = AssetLoader.getInstance().getImage("background.png");
+	private Image rails = AssetLoader.getInstance().getImage("rails.png");
+	private Image title = AssetLoader.getInstance().getImage("title.png");
 	private static final Font FONT = Font.loadFont(HomeScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
 
-	public HomeScreen(int w, int h, int fps, double scale){
-		this.width = w;
-		this.height = h;
+	public HomeScreen(int fps){
 		this.fps = fps;
-		this.scale = scale;
 	}
 
 	public Scene getScene(){
 		StackPane pane = new StackPane();
-		Canvas canvas = new Canvas(this.width, this.height);
+		Canvas canvas = new Canvas(Util.GAME_WIDTH, Util.GAME_HEIGHT);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		pane.getChildren().add(canvas);
 
@@ -41,18 +39,18 @@ public class HomeScreen{
 		loop.setCycleCount(Animation.INDEFINITE);
 		loop.play();
 
-		UiButton playButton = new UiButton(gc, 300, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_play.png")), () -> {
+		UiButton playButton = new UiButton(gc, 300, 400, 128, 128, AssetLoader.getInstance().getImage("button_play.png"), () -> {
 			Random random = new Random();
-			GameScreen gs = new GameScreen("world"+(random.nextInt(9)+1)+".wld", this.width, this.height, this.fps, this.scale);
+			GameScreen gs = new GameScreen("world"+(random.nextInt(9)+1)+".wld", this.fps);
 			loop.stop();
 			MainApplication.stage.setScene(gs.getScene());
 		});
-		UiButton creditsButton = new UiButton(gc, 500, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_credits.png")), () -> {
-			WorldsScreen ws = new WorldsScreen(this.width, this.height, this.fps, this.scale);
+		UiButton creditsButton = new UiButton(gc, 500, 400, 128, 128, AssetLoader.getInstance().getImage("button_credits.png"), () -> {
+			WorldsScreen ws = new WorldsScreen(this.fps);
 			loop.stop();
 			MainApplication.stage.setScene(ws.getScene());
 		});
-		UiButton quitButton = new UiButton(gc, 700, 400, 128, 128, new Image(getClass().getResourceAsStream("/images/button_quit.png")), () -> {
+		UiButton quitButton = new UiButton(gc, 700, 400, 128, 128, AssetLoader.getInstance().getImage("button_quit.png"), () -> {
 			// Quit game
 			System.exit(0);
 		});
@@ -64,21 +62,22 @@ public class HomeScreen{
 		canvas.setOnMousePressed(e -> {
 			if (e.getButton() == MouseButton.PRIMARY){
 				for (UiButton ub : this.buttons){
-					ub.click(e.getX()/this.scale, e.getY()/this.scale);
+					ub.click(e.getX()/Util.SCALE, e.getY()/Util.SCALE);
 				}
 			}
 		});
 
-		Scene scene = new Scene(pane, this.width, this.height);
+		Scene scene = new Scene(pane, Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
+		scene.setFill(Color.BLACK);
 		return scene;
 	}
 
 	private void update(GraphicsContext gc){
-		gc.clearRect(0, 0, this.width, this.height);
-		gc.drawImage(this.background, 0, 0, this.width, this.height);
+		gc.clearRect(0, 0, Util.GAME_WIDTH, Util.GAME_HEIGHT);
+		gc.drawImage(this.background, 0, 0, Util.GAME_WIDTH, Util.GAME_HEIGHT);
 
 		gc.save();
-		gc.scale(this.scale, this.scale);
+		gc.scale(Util.SCALE, Util.SCALE);
 
 		gc.drawImage(this.title, 190, 130);
 		gc.setFont(FONT);
