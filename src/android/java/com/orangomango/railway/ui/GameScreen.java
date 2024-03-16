@@ -8,17 +8,18 @@ import javafx.scene.layout.StackPane;
 import javafx.animation.*;
 import javafx.util.Duration;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.KeyCode;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.image.WritableImage;
-import javafx.scene.media.AudioClip;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.orangomango.railway.Util;
+import com.orangomango.railway.AndroidUtil;
 import com.orangomango.railway.AssetLoader;
 import com.orangomango.railway.MainApplication;
+import com.orangomango.railway.MainActivity;
 import com.orangomango.railway.game.*;
 
 public class GameScreen{
@@ -35,7 +36,6 @@ public class GameScreen{
 	private volatile boolean gameRunning = true;
 	private String worldName;
 	private boolean gameoverSkip = false;
-	private Map<KeyCode, Boolean> keys = new HashMap<>();
 
 	public static int score, arrivals, misses;
 	public static InformationText infoText;
@@ -43,8 +43,7 @@ public class GameScreen{
 	public static final Font FONT = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 25);
 	private static final Font FONT_45 = Font.loadFont(GameScreen.class.getResourceAsStream("/fonts/font.ttf"), 45);
 	private static final Image WARNING_IMAGE = AssetLoader.getInstance().getImage("warning.png");
-	private static final AudioClip GAME_OVER_SOUND = AssetLoader.getInstance().getAudio("gameover.wav");
-	private static final AudioClip WARNING_SOUND = AssetLoader.getInstance().getAudio("warning.wav");
+	private static final String GAME_OVER_SOUND = "gameover.wav", WARNING_SOUND = "warning.wav";
 
 	public GameScreen(String worldName, int fps){
 		this.worldName = worldName;
@@ -56,7 +55,7 @@ public class GameScreen{
 		infoText = null;
 	}
 
-	public Scene getScene(){
+	public StackPane getScene(){
 		StackPane pane = new StackPane();
 		Canvas canvas = new Canvas(Util.GAME_WIDTH, Util.GAME_HEIGHT);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -71,14 +70,14 @@ public class GameScreen{
 				try {
 					int n = Math.random() < 0.6 ? 1 : (Math.random() < 0.8 ? 2 : 3);
 					if (score < 1500) n = 1;
-					WARNING_SOUND.play();
+					AndroidUtil.playSound(WARNING_SOUND, false);
 					Tile[] warningTile = Util.getRandomStart(this.world, n);
 					n = warningTile.length; // fix
 					for (int i = 0; i < n; i++){
 						this.warningTiles.add(warningTile[i]);
 					}
 					Thread.sleep(1000);
-					WARNING_SOUND.play();
+					AndroidUtil.playSound(WARNING_SOUND, false);
 					int cooldown = TRAIN_COOLDOWN-50*(int)Math.round(score/225.0);
 					Thread.sleep(Math.max(cooldown, 1000));
 					for (int i = 0; i < n; i++){
@@ -144,22 +143,24 @@ public class GameScreen{
 				} else if (this.gameoverSkip){
 					this.loop.stop();
 					HomeScreen hs = new HomeScreen(this.fps);
-					MainApplication.stage.setScene(hs.getScene());
+					MainApplication.stage.getScene().setRoot(hs.getScene());
 				}
 			}
 		});
-
-		canvas.setFocusTraversable(true);
-		canvas.setOnKeyPressed(e -> this.keys.put(e.getCode(), true));
-		canvas.setOnKeyReleased(e -> this.keys.put(e.getCode(), false));
 
 		this.loop = new Timeline(new KeyFrame(Duration.millis(1000.0/this.fps), e -> update(gc)));
 		this.loop.setCycleCount(Animation.INDEFINITE);
 		this.loop.play();
 
-		Scene scene = new Scene(pane, Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
-		scene.setFill(Color.BLACK);
-		return scene;
+		MainActivity.getInstance().setOnBackPressed(() -> {
+			// Quit the game
+			this.loop.stop();
+			this.gameRunning = false;
+			HomeScreen hs = new HomeScreen(this.fps);
+			MainApplication.stage.getScene().setRoot(hs.getScene());
+		});
+
+		return pane;
 	}
 
 	private void createRandomTrain(Tile tile){
@@ -255,8 +256,8 @@ public class GameScreen{
 		gc.restore();
 
 		try {
-			List<Tile> tiles = new ArrayList<Tile>(this.trains.stream().flatMap(train -> train.getTrain().stream()).map(c -> c.getCurrentTile()).filter(c -> c != null).toList());
-			tiles.addAll(this.cars.stream().map(c -> c.getCurrentTile()).filter(c -> c != null).distinct().toList());
+			List<Tile> tiles = new ArrayList<Tile>(this.trains.stream().flatMap(train -> train.getTrain().stream()).map(c -> c.getCurrentTile()).filter(c -> c != null).collect(Collectors.toList()));
+			tiles.addAll(this.cars.stream().map(c -> c.getCurrentTile()).filter(c -> c != null).distinct().collect(Collectors.toList()));
 			Map<Tile, Integer> occurences = new HashMap<>();
 			for (Tile t : tiles){
 				occurences.put(t, occurences.getOrDefault(t, 0)+1);
@@ -264,7 +265,7 @@ public class GameScreen{
 			for (Map.Entry<Tile, Integer> entry : occurences.entrySet()){
 				if (entry.getValue() > 1){
 					// GAME OVER
-					GAME_OVER_SOUND.play();
+					AndroidUtil.playSound(GAME_OVER_SOUND, false);
 					this.playedTime = diff;
 					this.canvasImage = gc.getCanvas().snapshot(null, new WritableImage((int)Math.ceil(Util.GAME_WIDTH), (int)Math.ceil(Util.GAME_HEIGHT)));
 					this.gameRunning = false;
@@ -284,15 +285,6 @@ public class GameScreen{
 				this.trains.remove(i);
 				i--;
 			}
-		}
-
-		// Quit the game
-		if (this.keys.getOrDefault(KeyCode.ESCAPE, false)){
-			this.loop.stop();
-			this.gameRunning = false;
-			HomeScreen hs = new HomeScreen(this.fps);
-			MainApplication.stage.setScene(hs.getScene());
-			this.keys.put(KeyCode.ESCAPE, false);
 		}
 	}
 

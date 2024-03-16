@@ -3,7 +3,8 @@ package com.orangomango.railway.ui;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.media.AudioClip;
+
+import com.orangomango.railway.AndroidUtil;
 
 public class UiButton{
 	private double x, y, w, h;
@@ -12,7 +13,7 @@ public class UiButton{
 	private GraphicsContext gc;
 	private volatile boolean hovering;
 
-	private static final AudioClip SELECT_SOUND = new AudioClip(UiButton.class.getResource("/audio/select.wav").toExternalForm());
+	private static final String SELECT_SOUND = "select.wav";
 
 	public UiButton(GraphicsContext gc, double x, double y, double w, double h, Image image, Runnable onClick){
 		this.gc = gc;
@@ -36,7 +37,7 @@ public class UiButton{
 		Rectangle2D rect = new Rectangle2D(this.x, this.y, this.w, this.h);
 		if (rect.contains(x, y)){
 			this.onClick.run();
-			SELECT_SOUND.play();
+			AndroidUtil.playSound(SELECT_SOUND, false);
 		}
 	}
 

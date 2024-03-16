@@ -2,32 +2,33 @@ package com.orangomango.railway;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 
 import com.orangomango.railway.ui.HomeScreen;
 
 public class MainApplication extends Application{
 	private static final int FPS = 40;
-	private static final Media BACKGROUND_MUSIC = AssetLoader.getInstance().getMedia("background.mp3");
-
 	public static Stage stage;
 
 	@Override
-	public void start(Stage stage){
+	public void start(Stage stage) throws Exception{
+		// Load the AssetLoader
+		Class.forName("com.orangomango.railway.AssetLoader");
+
+		AndroidUtil.prepareApp();
 		MainApplication.stage = stage;
 		stage.setTitle("RAIL-the-WAY v2.0");
-
-		MediaPlayer music = new MediaPlayer(BACKGROUND_MUSIC);
-		music.setCycleCount(MediaPlayer.INDEFINITE);
-		music.play();
+		AndroidUtil.launchFullscreen();
+		AndroidUtil.playSound("background.mp3", true);
 		
 		HomeScreen gs = new HomeScreen(FPS);
+		Scene scene = new Scene(gs.getScene(), Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
+		scene.setFill(Color.BLACK);
 
-		stage.setScene(gs.getScene());
+		stage.setScene(scene);
 		stage.setResizable(false);
-		stage.getIcons().add(AssetLoader.getInstance().getImage("icon.png"));
 		stage.show();
 	}
 	

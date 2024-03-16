@@ -4,11 +4,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
-import javafx.scene.media.AudioClip;
 
 import java.util.Random;
 
 import com.orangomango.railway.Util;
+import com.orangomango.railway.AndroidUtil;
 import com.orangomango.railway.AssetLoader;
 import com.orangomango.railway.ui.GameScreen;
 import com.orangomango.railway.ui.InformationText;
@@ -17,8 +17,7 @@ public class Carriage{
 	private static final double SPEED = 3;
 	private static final Image IMAGE = AssetLoader.getInstance().getImage("carriage.png");
 	private static final Image CARGO_IMAGE = AssetLoader.getInstance().getImage("cargo.png");
-	private static final AudioClip STATION_SOUND = AssetLoader.getInstance().getAudio("station.wav");
-	private static final AudioClip STATION_MISSED = AssetLoader.getInstance().getAudio("station_missed.wav");
+	private static final String STATION_SOUND = "station.wav", STATION_MISSED = "station_missed.wav";
 
 	private double x, y;
 	private World world;
@@ -101,7 +100,7 @@ public class Carriage{
 						boolean available = ((Station)t).use(useTime);
 						if (available){
 							this.moving = false;
-							STATION_SOUND.play();
+							AndroidUtil.playSound(STATION_SOUND, false);
 							int gainedScore = 100*this.multiplier;
 							GameScreen.score += gainedScore;
 							GameScreen.infoText = new InformationText(Color.YELLOW, "Score\n+"+gainedScore+(this.multiplier > 1 ? "\n(Combo x"+this.multiplier+")" : ""), 1150, 450);
@@ -134,7 +133,7 @@ public class Carriage{
 				GameScreen.score -= 75;
 				GameScreen.infoText = new InformationText(Color.RED, "Score\n-75", 1150, 450);
 				GameScreen.misses++;
-				STATION_MISSED.play();
+				AndroidUtil.playSound(STATION_MISSED, false);
 				this.missed = true;
 			}
 			this.currentTile = null;

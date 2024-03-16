@@ -4,7 +4,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.canvas.*;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseButton;
 import javafx.animation.*;
 import javafx.util.Duration;
 import javafx.scene.text.TextAlignment;
@@ -29,7 +28,7 @@ public class HomeScreen{
 		this.fps = fps;
 	}
 
-	public Scene getScene(){
+	public StackPane getScene(){
 		StackPane pane = new StackPane();
 		Canvas canvas = new Canvas(Util.GAME_WIDTH, Util.GAME_HEIGHT);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -43,12 +42,12 @@ public class HomeScreen{
 			Random random = new Random();
 			GameScreen gs = new GameScreen("world"+(random.nextInt(9)+1)+".wld", this.fps);
 			loop.stop();
-			MainApplication.stage.setScene(gs.getScene());
+			MainApplication.stage.getScene().setRoot(gs.getScene());
 		});
 		UiButton creditsButton = new UiButton(gc, 500, 400, 128, 128, AssetLoader.getInstance().getImage("button_credits.png"), () -> {
 			WorldsScreen ws = new WorldsScreen(this.fps);
 			loop.stop();
-			MainApplication.stage.setScene(ws.getScene());
+			MainApplication.stage.getScene().setRoot(ws.getScene());
 		});
 		UiButton quitButton = new UiButton(gc, 700, 400, 128, 128, AssetLoader.getInstance().getImage("button_quit.png"), () -> {
 			// Quit game
@@ -60,16 +59,12 @@ public class HomeScreen{
 		this.buttons.add(quitButton);
 
 		canvas.setOnMousePressed(e -> {
-			if (e.getButton() == MouseButton.PRIMARY){
-				for (UiButton ub : this.buttons){
-					ub.click(e.getX()/Util.SCALE, e.getY()/Util.SCALE);
-				}
+			for (UiButton ub : this.buttons){
+				ub.click(e.getX()/Util.SCALE, e.getY()/Util.SCALE);
 			}
 		});
-
-		Scene scene = new Scene(pane, Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
-		scene.setFill(Color.BLACK);
-		return scene;
+		
+		return pane;
 	}
 
 	private void update(GraphicsContext gc){

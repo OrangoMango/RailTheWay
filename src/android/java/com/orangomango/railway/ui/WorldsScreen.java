@@ -4,7 +4,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.canvas.*;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.KeyCode;
 import javafx.animation.*;
 import javafx.util.Duration;
@@ -16,6 +15,7 @@ import java.util.*;
 import java.io.*;
 
 import com.orangomango.railway.MainApplication;
+import com.orangomango.railway.MainActivity;
 import com.orangomango.railway.Util;
 import com.orangomango.railway.AssetLoader;
 
@@ -32,7 +32,7 @@ public class WorldsScreen{
 		this.fps = fps;
 	}
 
-	public Scene getScene(){
+	public StackPane getScene(){
 		StackPane pane = new StackPane();
 		Canvas canvas = new Canvas(Util.GAME_WIDTH, Util.GAME_HEIGHT);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -45,26 +45,19 @@ public class WorldsScreen{
 		loop.setCycleCount(Animation.INDEFINITE);
 		loop.play();
 
-		canvas.setFocusTraversable(true);
-		canvas.setOnKeyPressed(e -> {
-			if (e.getCode() == KeyCode.ESCAPE){
-				HomeScreen hs = new HomeScreen(this.fps);
-				MainApplication.stage.setScene(hs.getScene());
-			}
+		MainActivity.getInstance().setOnBackPressed(() -> {
+			HomeScreen hs = new HomeScreen(this.fps);
+			MainApplication.stage.getScene().setRoot(hs.getScene());
 		});
 
 		canvas.setOnMousePressed(e -> {
-			if (e.getButton() == MouseButton.PRIMARY){
-				for (UiButton ub : this.buttons){
-					ub.click(e.getX()/Util.SCALE, (e.getY()-this.scrollY)/Util.SCALE);
-				}
+			for (UiButton ub : this.buttons){
+				ub.click(e.getX()/Util.SCALE, (e.getY()-this.scrollY)/Util.SCALE);
 			}
 		});
 
 		canvas.setOnMouseDragged(e -> {
-			if (e.getButton() == MouseButton.PRIMARY){
-				this.slider.drag(e.getX()/Util.SCALE, (e.getY()-this.scrollY)/Util.SCALE);
-			}
+			this.slider.drag(e.getX()/Util.SCALE, (e.getY()-this.scrollY)/Util.SCALE);
 		});
 
 		canvas.setOnMouseMoved(e -> {
@@ -91,9 +84,7 @@ public class WorldsScreen{
 			titles.put(levelNumber, getTitle(levelNumber));
 		}
 
-		Scene scene = new Scene(pane, Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
-		scene.setFill(Color.BLACK);
-		return scene;
+		return pane;
 	}
 
 	private String getTitle(int n){
@@ -111,7 +102,7 @@ public class WorldsScreen{
 	private void play(int n, Timeline loop){
 		GameScreen gs = new GameScreen("world"+n+".wld", this.fps);
 		loop.stop();
-		MainApplication.stage.setScene(gs.getScene());
+		MainApplication.stage.getScene().setRoot(gs.getScene());
 	}
 
 	private void update(GraphicsContext gc){

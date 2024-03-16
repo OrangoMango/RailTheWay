@@ -2,11 +2,11 @@ package com.orangomango.railway.game;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.media.AudioClip;
 
 import java.util.*;
 
 import com.orangomango.railway.Util;
+import com.orangomango.railway.AndroidUtil;
 import com.orangomango.railway.AssetLoader;
 
 public class Rail extends Tile{
@@ -19,7 +19,7 @@ public class Rail extends Tile{
 	private byte disconnection;
 	
 	private static final Image IMAGE = AssetLoader.getInstance().getImage("rail.png");
-	private static final AudioClip TRACK_SOUND = AssetLoader.getInstance().getAudio("rail_change.wav");
+	private static final String TRACK_SOUND = "rail_change.wav";
 
 	public Rail(World world, int x, int y){
 		super(x, y);
@@ -74,7 +74,7 @@ public class Rail extends Tile{
 		index++;
 		index %= options.size();
 		this.direction = options.get(index);
-		TRACK_SOUND.play();
+		AndroidUtil.playSound(TRACK_SOUND, false);
 	}
 
 	public byte getDirection(){

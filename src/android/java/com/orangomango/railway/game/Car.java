@@ -97,7 +97,7 @@ public class Car{
 					return tp.distance(op) < Math.sqrt(Tile.WIDTH*Tile.WIDTH+Tile.HEIGHT*Tile.HEIGHT)*0.6;
 				} else return false;
 			} else return false;
-		}).findAny().isEmpty()){
+		}).findAny().orElse(null) == null){
 			if ((this.direction & 8) == 8){
 				this.y -= SPEED;
 			} else if ((this.direction & 4) == 4){

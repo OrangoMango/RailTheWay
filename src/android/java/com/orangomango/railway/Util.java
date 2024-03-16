@@ -5,11 +5,17 @@ import java.util.*;
 import com.orangomango.railway.game.*;
 
 public class Util{
-	public static final double WINDOW_WIDTH = 1150;
-	public static final double WINDOW_HEIGHT = 750;
-	public static final double SCALE = WINDOW_HEIGHT/750;
-	public static final double GAME_WIDTH = 1150*Util.SCALE;
-	public static final double GAME_HEIGHT = 750*Util.SCALE;
+	public static double WINDOW_WIDTH, WINDOW_HEIGHT;
+	public static double SCALE, GAME_WIDTH, GAME_HEIGHT;
+
+	static {
+		double[] size = AndroidUtil.getScreenSize();
+		WINDOW_WIDTH = size[0];
+		WINDOW_HEIGHT = size[1];
+		SCALE = WINDOW_HEIGHT/750;
+		GAME_WIDTH = 1150*Util.SCALE;
+		GAME_HEIGHT = 750*Util.SCALE;
+	}
 
 	public static byte invertDirection(byte dir){
 		if ((dir & 8) == 8){

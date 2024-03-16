@@ -2,11 +2,11 @@ package com.orangomango.railway.game;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.media.AudioClip;
 
 import java.util.List;
 
 import com.orangomango.railway.Util;
+import com.orangomango.railway.AndroidUtil;
 import com.orangomango.railway.AssetLoader;
 
 public class Stoplight extends Tile{
@@ -15,7 +15,7 @@ public class Stoplight extends Tile{
 	private World world;
 
 	private static final Image IMAGE = AssetLoader.getInstance().getImage("stoplight.png");
-	private static final AudioClip STOPLIGHT_SOUND = AssetLoader.getInstance().getAudio("stoplight.wav");
+	private static final String STOPLIGHT_SOUND = "stoplight.wav";
 
 	public Stoplight(World world, int x, int y, byte target){
 		super(x, y);
@@ -38,7 +38,7 @@ public class Stoplight extends Tile{
 				}
 			}
 		}
-		STOPLIGHT_SOUND.play();
+		AndroidUtil.playSound(STOPLIGHT_SOUND, false);
 	}
 
 	public Tile getTargetTile(){
