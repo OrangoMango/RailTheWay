@@ -19,7 +19,7 @@ public class AssetLoader{
 
 	public AssetLoader(){
 		instance = this;
-		loadImages("background.png", "button_credits.png", "button_play.png", "button_quit.png", "car.png", "cargo.png", "carriage.png", "crossingGate.png", "diff_difficult.png", "diff_easy.png", "grass.png", "icon.png", "rail.png", "road.png", "slider.png", "station.png", "stoplight.png", "title.png", "warning.png");
+		loadImages("background.png", "button_credits.png", "button_play.png", "button_quit.png", "car.png", "cargo.png", "carriage.png", "crossingGate.png", "diff_difficult.png", "diff_easy.png", "grass.png", "icon.png", "rail.png", "road.png", "slider.png", "station.png", "station_timer.png", "stoplight.png", "title.png", "warning.png");
 		loadAudios("gameover.wav", "rail_change.wav", "select.wav", "station.wav", "station_missed.wav", "stoplight.wav", "warning.wav");
 		loadMusics("background.mp3");
 	}
